@@ -1,0 +1,50 @@
+{
+  "enabled": true,
+  "revision": "equipo-2026-11-08",
+  "accounts": [
+    {
+      "id": "807a1f19-9a4e-4cb6-a934-42aacfa3ed10",
+      "username": "jeshua",
+      "name": "Jeshua Sánchez Alcívar",
+      "role": "Administrador",
+      "role_id": "00000000-0000-4000-8000-000000000001",
+      "salt": "733b535d8fee639dc0d148c2fdc40871",
+      "iterations": 600000,
+      "password_hash": "800375895e6e7a708f178732f0c6fcc4de5e0906833b0f46dcba89bde18e5497",
+      "credential_revision": "password-jeshua-2026-11-10"
+    },
+    {
+      "id": "dd67991b-598d-4e57-b410-dd7d422181f6",
+      "username": "wilson",
+      "name": "Wilson Pinela",
+      "role": "Administrador",
+      "role_id": "00000000-0000-4000-8000-000000000001",
+      "salt": "073171c1cc8f5d5a4c361a73aef9f46f",
+      "iterations": 600000,
+      "password_hash": "c6d5b281a0c80e5fcfa064ce13ab946bf8b1d56415fe15c061ec6b7714042050",
+      "credential_revision": "password-wilson-2026-11-10"
+    },
+    {
+      "id": "55d89d82-38f5-4d99-b7d8-75af9de9c8cc",
+      "username": "adrian",
+      "name": "Adrian Chito Vargas",
+      "role": "Enfermero",
+      "role_id": "00000000-0000-4000-8000-000000000002",
+      "salt": "98dbf638e3d80e75d296a4ac704f2d96",
+      "iterations": 600000,
+      "password_hash": "85a1a5c320ce9e19ef427f428714248f292bb2d14eb25817fd4fd6e862c5f17f",
+      "credential_revision": "password-adrian-2026-11-10"
+    },
+    {
+      "id": "32577172-be1f-429f-b8f6-4a70eeb0e21f",
+      "username": "matias",
+      "name": "Matias Muñiz",
+      "role": "Fisioterapeuta",
+      "role_id": "00000000-0000-4000-8000-000000000003",
+      "salt": "053b4a8cfe062c86e021bf39b34dbc85",
+      "iterations": 600000,
+      "password_hash": "0aad10ae06904ad0bf2990b36dd09c386e8905f17df2c279d1b78e32266d2644",
+      "credential_revision": "password-matias-2026-11-10"
+    }
+  ]
+}

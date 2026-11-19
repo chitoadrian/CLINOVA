@@ -1,0 +1,63 @@
+/* Contraste y escala comunes a las dos apariencias. */
+:root{--muted:#536c7b;--border:#d6e1e8;--surface:#fff;--ink:#183e51;--subtle:#536c7b;--field:#fff;--focus:#087b96}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:9px 12px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--ink);font-size:12px;font-weight:600;white-space:nowrap}
+.theme-toggle:hover{border-color:var(--focus)}
+.auth-header-label{margin-left:auto}
+.auth-header-label,.auth-card-top>span:last-child,.auth-description,.auth-services small,.auth-connection,.auth-security p,.auth-security p span,.auth-footer,.auth-intro>p{color:var(--subtle)}
+.auth-security p span,.auth-footer{font-size:11px}
+input::placeholder,textarea::placeholder,.auth-input input::placeholder{color:#647986;opacity:1}
+.page-heading p,.panel-title p,.stat>div,.stat small,.patient-cell small,.patient-option small,.patient-help,.entry-heading>span,.entry-author,.entry-values small,.history-entry p,.history-entry small,.row-id,.empty,.page-footer,.workspace-label,.sidebar-bottom small,.form-footer>span,.version{color:var(--subtle)}
+.stat small,.row-id,.entry-author,.patient-cell small,.sidebar-bottom small{font-size:11px}
+th{font-size:12px;color:var(--subtle)}td{font-size:13px;color:var(--ink)}
+.field,.editor .field{font-size:13px;color:var(--ink)}
+.sidebar-bottom strong{font-size:12px;line-height:1.5}.sidebar-bottom small{line-height:1.5}
+.sidebar-bottom>div:nth-child(2){min-width:0}.sidebar-bottom .avatar{flex-shrink:0}
+.sidebar-bottom button,.icon-button{min-width:36px;min-height:36px}
+.sidebar{overflow-y:auto}.sidebar nav{flex-shrink:0}.sidebar-bottom{flex-shrink:0}
+.sidebar-card{margin-bottom:18px}.topbar{min-height:78px;height:auto;padding-block:12px}
+.connection{flex-wrap:wrap;justify-content:flex-end;row-gap:8px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus)}
+.auth-input:focus-within{border-color:var(--focus);box-shadow:0 0 0 3px #087b9626}
+.patient-cell small{overflow-wrap:anywhere}.entry-values{min-width:0}.panel{min-width:0}
+.table-wrap{position:relative;max-width:100%;overflow-x:auto}.status{white-space:nowrap}
+@media(max-width:800px){.sidebar nav{flex-wrap:wrap}.topbar{align-items:flex-start;gap:12px;flex-wrap:wrap}.topbar>div{gap:8px}.connection{justify-content:flex-start}.theme-toggle span{display:inline}.auth-header{justify-content:space-between}.auth-header .theme-toggle span{display:none}.auth-header .theme-toggle{width:40px;padding:8px}.auth-brand{margin-right:auto}.sidebar .brand{justify-content:flex-start}.clinical-tabs button{font-size:13px}.editor{margin:16px;padding:16px}}
+/* Oscuro: superficies azul noche, jerarquía clara y estados distinguibles. */
+:root[data-theme=dark]{--green:#137e99;--muted:#b3c8d3;--subtle:#b3c8d3;--border:#385160;--surface:#142a38;--ink:#e5f0f6;--field:#0c202d;--focus:#73dbe6;color:var(--ink);background:#0b1b27}
+[data-theme=dark] .auth-page{color:var(--ink);background:radial-gradient(ellipse at 8% 57%,#123742 0,transparent 53%),radial-gradient(ellipse at 94% 9%,#182e47 0,transparent 45%),#0b1b27}
+[data-theme=dark] .auth-page:before{opacity:.15}
+[data-theme=dark] .auth-card,[data-theme=dark] .sidebar,[data-theme=dark] .topbar,[data-theme=dark] .panel,[data-theme=dark] .stat,[data-theme=dark] .date-chip{background:var(--surface);border-color:var(--border);color:var(--ink)}
+[data-theme=dark] .auth-card{box-shadow:0 24px 64px #0004}
+[data-theme=dark] .auth-intro h1,[data-theme=dark] .auth-card h2,[data-theme=dark] .auth-field>span,[data-theme=dark] .auth-services strong,[data-theme=dark] .topbar strong,[data-theme=dark] .patient-cell strong,[data-theme=dark] .patient-option strong,[data-theme=dark] .entry-heading>strong,[data-theme=dark] .sync-metrics strong{color:var(--ink)}
+[data-theme=dark] .auth-intro em,[data-theme=dark] .auth-eyebrow,[data-theme=dark] .eyebrow,[data-theme=dark] .stat-icon,[data-theme=dark] .auth-connection svg{color:#79d7df}
+[data-theme=dark] .auth-brand img,[data-theme=dark] .brand img{filter:brightness(0) invert(1);opacity:.96}
+[data-theme=dark] .auth-input,[data-theme=dark] input,[data-theme=dark] select,[data-theme=dark] textarea{background:var(--field);border-color:#4b6474;color:var(--ink)}
+[data-theme=dark] input::placeholder,[data-theme=dark] textarea::placeholder,[data-theme=dark] .auth-input input::placeholder{color:#a2b9c6}
+[data-theme=dark] .auth-input input{background:transparent}
+[data-theme=dark] .auth-input,[data-theme=dark] .auth-reveal,[data-theme=dark] .icon-button,[data-theme=dark] .search,[data-theme=dark] .connection,[data-theme=dark] .topbar,[data-theme=dark] .sidebar-bottom button{color:#b8d0dc}
+[data-theme=dark] .auth-services svg,[data-theme=dark] .auth-lock,[data-theme=dark] .small-icon,[data-theme=dark] .avatar,[data-theme=dark] .patient-avatar,[data-theme=dark] .count{background:#1c4050;border-color:#385665;color:#9be4e9}
+[data-theme=dark] .auth-security,[data-theme=dark] .clinical-entry,[data-theme=dark] td,[data-theme=dark] .panel-title,[data-theme=dark] .form-footer,[data-theme=dark] .history-entry{border-color:var(--border)}
+[data-theme=dark] .nav-item{color:#bed0da}
+[data-theme=dark] .nav-item:hover,[data-theme=dark] .patient-option:hover,[data-theme=dark] .icon-button:hover{background:#213d4c}
+[data-theme=dark] .nav-item.active,[data-theme=dark] .patient-option.selected{background:#204755;color:#a7edf1;border-color:#518793}
+[data-theme=dark] .sidebar-card,[data-theme=dark] .editor,[data-theme=dark] .sync-metrics>div,[data-theme=dark] .conflict-columns>div,[data-theme=dark] .invitation{background:#102431;border-color:var(--border)}
+[data-theme=dark] .sidebar-card p,[data-theme=dark] .sidebar-card strong,[data-theme=dark] .local-tag,[data-theme=dark] .patient-summary p,[data-theme=dark] .progress-strip small,[data-theme=dark] .sync-metrics span{color:#b3c8d3}
+[data-theme=dark] .demo-banner,[data-theme=dark] .patient-summary,[data-theme=dark] .progress-strip{background:#173442;border-color:#365766;color:#c0e3ec}
+[data-theme=dark] .nursing-card{background:#153c46;border-color:#3b6470;color:#b5edf0}
+[data-theme=dark] .physio-card{background:#24344e;border-color:#455d80;color:#cfddff}
+[data-theme=dark] .module-card p,[data-theme=dark] .module-card .eyebrow{color:inherit}
+[data-theme=dark] .module-art{opacity:.16}
+[data-theme=dark] th{background:#102330;color:#c0d3de}
+[data-theme=dark] .clinical-tabs{background:#102431}
+[data-theme=dark] .clinical-tabs button{color:#b8cdd8}
+[data-theme=dark] .clinical-tabs button.active{background:#285469;color:#e4faff}
+[data-theme=dark] .secondary{background:#284454;color:#e1edf4}
+[data-theme=dark] .primary,[data-theme=dark] .auth-submit{background:#176e89;color:#fff}
+[data-theme=dark] .primary:hover,[data-theme=dark] .auth-submit:hover{background:#207e99}
+[data-theme=dark] .status,[data-theme=dark] .sync-badge.pendiente,[data-theme=dark] .bed-card.occupied{background:#3b3020;color:#ffdc92;border-color:#7c653c}
+[data-theme=dark] .status.green,[data-theme=dark] .success,[data-theme=dark] .sync-badge.completado,[data-theme=dark] .bed-card{background:#173d34;color:#a4e8cb;border-color:#386e59}
+[data-theme=dark] .error,[data-theme=dark] .auth-error,[data-theme=dark] .sync-badge.error,[data-theme=dark] .delete-confirm{background:#40282d;color:#ffc4bb;border-color:#85565a}
+[data-theme=dark] .sync-badge,[data-theme=dark] .sync-badge.sincronizando{background:#193d52;color:#b8e5ff;border-color:#416c87}
+[data-theme=dark] .sync-badge.completado{background:#173d34;color:#a4e8cb;border-color:#386e59}
+[data-theme=dark] .sync-badge.error{background:#40282d;color:#ffc4bb;border-color:#85565a}
+[data-theme=dark] .sync-badge.pendiente{background:#3b3020;color:#ffdc92;border-color:#7c653c}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}

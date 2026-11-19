@@ -1,0 +1,1 @@
+{ "$schema": "../gen/schemas/desktop-schema.json", "identifier": "default", "description": "Ventana principal; almacenamiento IndexedDB del WebView", "windows": ["main"], "permissions": ["core:default"] }
