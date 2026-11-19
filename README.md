@@ -68,7 +68,7 @@ Son borradores de Semana 4. Imprimir las tres páginas de secuencias; se recomie
 
 ## Windows y Linux
 
-Los instaladores se generan en GitHub Actions y se incorporan al ZIP de entrega después de comprobar cada trabajo.
+Los instaladores de Windows (MSI y EXE) y Linux (DEB y AppImage) se generaron en [GitHub Actions](https://github.com/chitoadrian/CLINOVA/actions/runs/44534787525) y se incorporaron al ZIP de Semana 4. Ambos trabajos y el de Web terminaron correctamente. Se verificaron formato, tamaño y SHA-256; la instalación y apertura en equipos de destino quedan para la revisión cruzada.
 
 [Requisitos oficiales Tauri](https://v2.tauri.app/start/prerequisites/).
 
@@ -76,7 +76,7 @@ Windows: Rust MSVC, Microsoft C++ Build Tools, Windows SDK y WebView2; ejecutar 
 
 Linux: Rust, Node y dependencias WebKitGTK del manual técnico; ejecutar bash scripts/build-linux.sh.
 
-.github/workflows/escritorio.yml ejecuta los trabajos nativos de Windows y Linux en cada envío a main.
+.github/workflows/escritorio.yml ejecuta los trabajos nativos de Windows y Linux en cada envío a main. Los paquetes incluidos en la entrega proceden del commit ab2c06d4c7f3bc5f04c38f8e094190596142a103.
 
 ## Seguridad y límites
 
