@@ -1,5 +1,5 @@
 import {useEffect,useState,type FormEvent} from 'react';
-import {ArrowRight,Eye,EyeOff,LockKeyhole,ShieldCheck,HeartPulse,Activity,Cloud,UserRound,Wallet} from 'lucide-react';
+import {Eye,EyeOff,LockKeyhole,ShieldCheck,HeartPulse,Activity,Cloud,UserRound,Wallet} from 'lucide-react';
 import {status,bootstrap,login,type User} from '../db';
 import './AccessScreen.css';
 import ThemeToggle from './ThemeToggle';
@@ -41,7 +41,7 @@ export default function AccessScreen({onLogin}:{onLogin:(u:User,password:string)
      <label className="auth-field"><span>Contraseña</span><div className="auth-input"><LockKeyhole size={18}/><input aria-label="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} type={visible?'text':'password'} required minLength={initialized?undefined:10} maxLength={128} autoComplete={initialized?'current-password':'new-password'} placeholder="Ingresa tu contraseña" disabled={busy}/><button className="auth-reveal" type="button" aria-label={visible?'Ocultar contraseña':'Mostrar contraseña'} aria-pressed={visible} onClick={()=>setVisible(!visible)}>{visible?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label>
      {!initialized&&<label className="auth-field"><span>Confirmar contraseña</span><input value={confirm} onChange={e=>setConfirm(e.target.value)} type={visible?'text':'password'} required minLength={10} maxLength={128} autoComplete="new-password" disabled={busy}/></label>}
      {error&&<p className="auth-error" role="alert">{error}</p>}
-     <button className="auth-submit" disabled={busy} type="submit"><span>{busy?'Validando acceso…':initialized?'Ingresar a CLINOVA':'Crear administrador'}</span><ArrowRight size={19}/></button>
+     <button className="auth-submit" disabled={busy} type="submit"><span>{busy?'Validando acceso…':initialized?'Ingresar a CLINOVA':'Crear administrador'}</span><ShieldCheck size={19}/></button>
     </form>}
     {initialized===null&&error&&<p className="auth-error" role="alert">{error}</p>}
     <div className="auth-security"><ShieldCheck size={17}/><p>Acceso personal protegido.<br/><span>La información disponible depende de tu rol.</span></p></div>

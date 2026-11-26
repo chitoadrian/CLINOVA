@@ -1,0 +1,170 @@
+/* CLINOVA · sistema visual común. Se carga al final para normalizar estilos anteriores. */
+:root{
+  --ink:#102f42;
+  --subtle:#536e7c;
+  --border:#d8e6eb;
+  --surface:#fff;
+  --field:#f9fcfd;
+  --focus:#1a9cad;
+  --green:#087b8e;
+  font-family:"Aptos","Segoe UI",Arial,sans-serif;
+  font-size:16px;
+  color:var(--ink);
+  background:#f2f7f8;
+}
+body{background:#f2f7f8;color:var(--ink);font-size:1rem;line-height:1.55}
+button{transition:background-color .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease}
+button:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+
+/* Layout y navegación */
+.app-shell{background:linear-gradient(160deg,#f3f8f9 0%,#edf4f6 60%,#f7fafb 100%)}
+.sidebar{background:#082b3e;border-right:1px solid #16445a;border-top:0!important;color:#e7f7f9;width:260px;padding:22px 16px 18px;box-shadow:8px 0 35px #092a3b12}
+.main-shell{margin-left:260px;width:calc(100% - 260px)}
+.sidebar .brand{min-height:108px;padding:0 14px;justify-content:flex-start}
+.sidebar .brand img{width:148px;height:112px;filter:brightness(0) invert(1);object-fit:contain;opacity:.98}
+.workspace-label{color:#95bbc6;margin:21px 16px 13px;font-size:.72rem;letter-spacing:.13em;font-weight:750}
+.sidebar nav{display:grid;gap:5px}
+.sidebar .nav-item{min-height:48px;margin:0;border:1px solid transparent;border-left:3px solid transparent;border-radius:12px;color:#c0d5dd;font-size:.92rem;font-weight:600;padding:12px 14px;gap:13px}
+.sidebar .nav-item svg{color:#8fb4c1}
+.sidebar .nav-item:hover{color:#fff;background:#16465a;border-color:#2b6072}
+.sidebar .nav-item.active{color:#fff!important;background:linear-gradient(100deg,#13677a,#12576e);border-color:#2e97a4;border-left-color:#70e0df!important;box-shadow:0 6px 16px #001b2b29}
+.sidebar .nav-item.active svg{color:#d9ffff}
+.sidebar-card{background:#113e51;border:1px solid #285a6b;color:#e4f6f8;padding:18px;border-radius:16px;box-shadow:none}
+.sidebar-card .small-icon{background:#1c6170;color:#9be9e7}
+.sidebar-card strong{font-size:.92rem;color:#f3fbfc;margin:12px 0 6px}
+.sidebar-card p,.sidebar-card .offline-status{font-size:.78rem;color:#b4d2d8;line-height:1.5}
+.sidebar .local-tag{font-size:.74rem;color:#cce7e8}
+.sidebar-bottom{border-color:#2d5c6d;padding:16px 4px 0}
+.sidebar-bottom .avatar{background:#d7eff0;color:#0a596d;width:39px;height:39px;font-size:.78rem}
+.sidebar-bottom strong{color:#fff;font-size:.84rem}
+.sidebar-bottom small{color:#afcbd3;font-size:.76rem;margin-top:2px}
+.sidebar-bottom button{color:#d7edf0;border-radius:8px;min-height:38px}
+.sidebar-bottom button:hover{background:#1c5366;color:#fff}
+.topbar{min-height:72px;padding:13px clamp(22px,3.2vw,48px);background:#fff;border-bottom:1px solid var(--border);box-shadow:0 4px 20px #0a435708;color:#486a7b;font-size:.88rem}
+.topbar strong{color:#153b4f;font-weight:750}
+.connection{color:#3e6574;font-size:.82rem}
+.separator{background:#d6e4e8}
+main{padding:35px clamp(22px,3.2vw,48px) 25px;max-width:1560px}
+.page-heading{margin-bottom:8px}
+.page-heading h1{font-size:clamp(2rem,2.9vw,2.8rem);line-height:1.1;font-weight:750;letter-spacing:-.04em;color:#0c3248}
+.page-heading p{font-size:.94rem;line-height:1.55;color:#597482;max-width:690px}
+.page-heading .eyebrow{font-size:.74rem;letter-spacing:.13em;font-weight:750;color:#087b8e}
+.date-chip{border-radius:10px;padding:10px 13px;font-size:.8rem;color:#436577;background:#fff}
+.demo-banner{background:#e9f5f7;border:1px solid #cde6e9;color:#1f6677;border-radius:12px;font-size:.8rem;font-weight:600;padding:11px 15px;margin:20px 0 23px}
+.demo-banner .version{font-size:.75rem;color:#57808b}
+.page-footer{font-size:.76rem;color:#6d8790;margin-top:30px}
+
+/* Superficies y formularios */
+.panel,.stat,.finance-stats article,.admin-metrics article,.area-kpis article{background:#fff;border:1px solid var(--border);border-radius:17px;box-shadow:0 9px 25px #0b41500b}
+.panel-title{padding:25px 26px 19px}
+.panel-title h2{font-size:1.18rem;line-height:1.3;font-weight:730;color:#173c4e}
+.panel-title p{font-size:.82rem;color:#627b87;margin-top:5px}
+.primary,.secondary,.danger-button{min-height:43px;border-radius:10px;font-size:.84rem;font-weight:700;padding:10px 15px}
+.primary{background:#0b7188;color:#fff;box-shadow:0 4px 11px #0b718826}
+.primary:hover{background:#075a73;box-shadow:0 7px 16px #0b718830}
+.secondary{background:#edf6f8;color:#145a70;border:1px solid #cce4e9}
+.secondary:hover{background:#e1f0f3;border-color:#9dced6}
+.icon-button{display:inline-grid;place-items:center;width:39px;height:39px;color:#28677a;border:1px solid transparent;border-radius:9px}
+.icon-button:hover{background:#e5f3f6;border-color:#c8e1e6}
+.field,.editor .field,.clinical-form .field{font-size:.86rem;font-weight:650;color:#2e5364;gap:8px}
+input,select,textarea,.clinical-form input,.clinical-form select,.clinical-form textarea{background:#fbfdfd;color:#163a4b;border-color:#cbdce3;border-radius:10px;min-height:44px;font-size:.88rem;padding:10px 12px}
+input::placeholder,textarea::placeholder{color:#6c8793;opacity:1}
+.search{min-height:42px;border-color:#cfdee4;border-radius:10px;color:#517281;background:#fbfdfd}
+.search input{font-size:.84rem;min-height:38px;background:transparent}
+.clinical-tabs{border-radius:12px;padding:5px;gap:4px}
+.clinical-tabs button{font-size:.84rem;font-weight:650;min-height:42px;border-radius:9px}
+.clinical-tabs button.active{background:#dceff2;color:#0b6075}
+.form-footer>span{font-size:.78rem;color:#647e8a}
+.alert{font-size:.83rem;line-height:1.55}
+.empty,.patient-help p{font-size:.83rem;color:#637d88}
+table{font-size:.83rem}
+th{background:#f1f6f8;color:#426575;font-size:.78rem;letter-spacing:.02em;font-weight:750;padding:14px 20px}
+td{color:#274b5c;font-size:.84rem;padding:16px 20px;border-color:#e6eff2}
+tbody tr:hover{background:#f8fbfc}
+.patient-cell strong,.patient-option strong{font-size:.86rem;color:#234b5c}
+.patient-cell small,.patient-option small,.row-id{font-size:.75rem;color:#64818d}
+.patient-avatar{background:#e0f0f2;color:#0b7188;font-size:.85rem;font-weight:750}
+.status,.finance-type{font-size:.73rem;font-weight:700;border-radius:8px;padding:6px 9px}
+.finance-toolbar .search{max-width:520px}
+.finance-toolbar select{font-size:.84rem}
+.clinical-entry{border-color:#e5eef1}
+.entry-heading strong{font-size:.91rem;color:#1c4558}
+.entry-heading>span,.entry-author,.entry-values small,.history-entry small{font-size:.76rem;color:#647e8a}
+.entry-values p,.history-entry p{font-size:.85rem;color:#2d5160}
+
+/* Portada y paneles por rol */
+.auth-page{background:radial-gradient(circle at 9% 10%,#d6edf0 0,transparent 34%),radial-gradient(circle at 93% 88%,#dcecf3 0,transparent 33%),#f4f8fa;padding:22px clamp(23px,6vw,92px) 20px}
+.auth-page:before{background-size:34px 34px;opacity:.16}
+.auth-header{max-width:1260px}
+.auth-brand{width:173px;height:111px}
+.auth-brand img{width:173px;height:173px;transform:translateY(-31px);background:transparent}
+.auth-header-label{font-size:.76rem;letter-spacing:.16em;font-weight:750;color:#406d7e}
+.auth-page main.auth-layout{max-width:1160px;grid-template-columns:minmax(0,1.1fr) minmax(380px,.9fr);gap:clamp(35px,6vw,90px);padding:12px 0 42px}
+.auth-intro h1{font-size:clamp(2.4rem,3.9vw,3.65rem);font-weight:750;letter-spacing:-.05em;line-height:1.13;color:#10374d;margin:20px 0}
+.auth-intro em{font-weight:600;color:#087c8f}
+.auth-intro>p{font-size:1rem;color:#547482;line-height:1.7;max-width:470px}
+.auth-eyebrow{font-size:.76rem;color:#08798e}
+.auth-services{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:32px 0 27px}
+.auth-services>div{background:#fff;border:1px solid #dbe9ed;border-radius:15px;padding:16px 14px;gap:11px;box-shadow:0 7px 18px #1a536509}
+.auth-services svg{color:#0f8195;width:23px;height:23px}
+.auth-services strong{font-size:.86rem;color:#245366}
+.auth-services small{font-size:.76rem;line-height:1.45;color:#617e8b}
+.auth-connection{font-size:.79rem;color:#4f7784;max-width:460px}
+.auth-card{background:#fff;border:1px solid #d9e8ed;border-radius:24px;padding:39px 40px 29px;box-shadow:0 25px 70px #0d445523}
+.auth-card-top>span:last-child{font-size:.71rem;color:#6a8794;font-weight:750}
+.auth-lock{background:#e4f3f5;color:#0a768b;border-radius:12px}
+.auth-card h2{font-size:1.85rem;font-weight:750;letter-spacing:-.03em;color:#153a4f}
+.auth-description{font-size:.9rem;color:#5b7885}
+.auth-field>span{font-size:.86rem;color:#315769}
+.auth-input{background:#fbfdfd;border-color:#cbdde3;border-radius:11px;min-height:50px}
+.auth-input input{font-size:.9rem;color:#183d50}
+.auth-submit{min-height:52px;border-radius:11px;background:#0a6c84;font-size:.9rem;font-weight:750;box-shadow:0 7px 17px #0a6c842b}
+.auth-submit:hover{background:#08556f}
+.auth-security p{font-size:.78rem;color:#4f6f7d}
+.auth-security p span{font-size:.75rem;color:#6b8793}
+.auth-footer{font-size:.73rem;color:#647f8b}
+.admin-hero,.area-hero,.finance-hero{border-radius:21px;box-shadow:0 17px 32px #0b4b5a22}
+.admin-hero h2,.area-hero h2,.finance-hero h2{font-weight:750;letter-spacing:-.035em}
+.admin-hero p,.area-hero p,.finance-hero p{font-size:.9rem;line-height:1.6}
+.admin-kicker,.area-hero>div>span,.finance-hero .eyebrow{font-size:.73rem;letter-spacing:.12em}
+.admin-hero-actions button,.area-hero-actions button{font-size:.82rem;min-height:43px;border-radius:10px}
+.admin-metrics article>span,.area-kpis span,.finance-stats span{font-size:.82rem}
+.admin-metrics small,.finance-stats small{font-size:.76rem}
+.admin-quick-list strong,.area-list strong,.area-history strong,.admin-recent-list strong{font-size:.87rem}
+.admin-quick-list small,.area-list small,.area-history small,.admin-recent-list small,.admin-recent-list time{font-size:.76rem}
+.admin-flow-row>div:first-child,.admin-caption{font-size:.8rem}
+.finance-note{font-size:.83rem;background:#fff;border-color:var(--border)}
+.finance-type{font-size:.72rem}
+
+/* La apariencia oscura conserva la jerarquía y el contraste. */
+:root[data-theme=dark]{--surface:#142b39;--ink:#e6f2f7;--subtle:#b5cbd5;--border:#365466;--field:#102635;--focus:#74d7e1;background:#0a1c28;color:var(--ink)}
+[data-theme=dark] body,[data-theme=dark] .app-shell{background:#0a1c28;color:var(--ink)}
+[data-theme=dark] .topbar,[data-theme=dark] .panel,[data-theme=dark] .stat,[data-theme=dark] .admin-metrics article,[data-theme=dark] .area-kpis article,[data-theme=dark] .finance-stats article{background:#142b39;border-color:#365466;color:var(--ink)}
+[data-theme=dark] .topbar strong,[data-theme=dark] .page-heading h1,[data-theme=dark] .panel-title h2,[data-theme=dark] .patient-cell strong,[data-theme=dark] .patient-option strong,[data-theme=dark] .admin-metrics strong,[data-theme=dark] .area-kpis strong,[data-theme=dark] .finance-stats strong{color:#ecf7fa}
+[data-theme=dark] .page-heading p,[data-theme=dark] .panel-title p,[data-theme=dark] .connection,[data-theme=dark] .date-chip{color:#b7d0da}
+[data-theme=dark] .date-chip,[data-theme=dark] .finance-note{background:#142b39;border-color:#365466;color:#c2d7df}
+[data-theme=dark] .demo-banner{background:#173746;border-color:#3b6572;color:#c6e9ee}
+[data-theme=dark] .nav-item.active{color:#fff}
+[data-theme=dark] .search,[data-theme=dark] input,[data-theme=dark] select,[data-theme=dark] textarea{background:#102635;border-color:#4a6979;color:#e6f2f7}
+[data-theme=dark] .search input{background:transparent}
+[data-theme=dark] .secondary{background:#24475a;border-color:#466c7c;color:#e8f5f8}
+[data-theme=dark] .secondary:hover{background:#2d566a}
+[data-theme=dark] th{background:#102532;color:#bed5df}
+[data-theme=dark] td{color:#d8e9ef;border-color:#345262}
+[data-theme=dark] tbody tr:hover{background:#193746}
+[data-theme=dark] .auth-page{background:radial-gradient(circle at 8% 8%,#154353 0,transparent 36%),#0a1c28}
+[data-theme=dark] .auth-card{background:#142b39;border-color:#3b5b6c}
+[data-theme=dark] .auth-intro h1,[data-theme=dark] .auth-card h2,[data-theme=dark] .auth-field>span,[data-theme=dark] .auth-services strong{color:#e9f5f8}
+[data-theme=dark] .auth-services>div{background:#183747;border-color:#365969;box-shadow:none}
+[data-theme=dark] .auth-input{background:#0e2634;border-color:#4b6a7a}
+[data-theme=dark] .auth-input input{background:transparent;color:#e9f5f8}
+[data-theme=dark] .auth-description,[data-theme=dark] .auth-intro>p,[data-theme=dark] .auth-connection,[data-theme=dark] .auth-services small,[data-theme=dark] .auth-footer{color:#bed5de}
+[data-theme=dark] .auth-card-top>span:last-child{color:#bdd3dc}
+[data-theme=dark] .auth-security p,[data-theme=dark] .auth-security p span{color:#bad0d9}
+
+@media(max-width:1100px){.auth-services{grid-template-columns:1fr}.auth-services>div{flex-direction:row;align-items:center}}
+@media(max-width:900px){.sidebar{width:220px}.main-shell{margin-left:220px;width:calc(100% - 220px)}.auth-page main.auth-layout{grid-template-columns:minmax(0,1fr) minmax(330px,.95fr);gap:30px}}
+@media(max-width:800px){.sidebar{width:auto;box-shadow:none}.main-shell{margin-left:0;width:100%}.sidebar nav{display:flex;flex-wrap:wrap}.sidebar .nav-item{width:auto}.topbar{padding:15px 20px}main{padding:23px 20px}.auth-page main.auth-layout{display:flex;flex-direction:column;gap:23px}.auth-intro{text-align:center}.auth-eyebrow{justify-content:center}.auth-services{display:none}.auth-card{justify-self:center;max-width:460px}}
+@media(max-width:600px){.auth-page{padding:14px 18px 22px}.auth-intro h1{font-size:2rem;margin:14px 0}.auth-intro>p,.auth-connection{display:none}.auth-card{padding:28px 26px}.auth-footer{font-size:.7rem}.sidebar .brand{min-height:70px}.sidebar .brand img{width:112px;height:78px}.workspace-label{margin:5px 10px 12px}.sidebar .nav-item{min-height:41px;padding:8px 11px;font-size:.78rem}.admin-hero,.area-hero,.finance-hero{padding:25px}.admin-hero-actions button,.area-hero-actions button{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
