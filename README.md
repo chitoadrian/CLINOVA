@@ -9,10 +9,10 @@ Sistema académico de gestión para la Clínica Sanpichito. Unidad Educativa Mon
 
 | Integrante | Responsabilidad del proyecto | Vista y funciones en la aplicación |
 |---|---|---|
-| Jeshua Sánchez Alcívar | Coordinación, integración y DevOps | Administrador: coordinación, directorio de pacientes, cuentas y estado de sincronización. |
+| Jeshua Sánchez Alcívar | Coordinación, integración y DevOps | Administrador: panel de ambas áreas, estados, actividad reciente, directorio, cuentas, sincronización e informe de coordinación PDF. |
 | Wilson Pinela | Base de datos, migraciones y autenticación; ahora Contabilidad | Contable: consulta de pacientes de ambas áreas, cargos, cobros, pagos, saldos y movimientos. No ve fichas clínicas ni usuarios. |
-| Adrian Chito Vargas | Frontend de Enfermería | Enfermero: sus pacientes, signos, triage, Kardex, camas, hospitalización y PDF del área. |
-| Matias Muñiz | Frontend de Fisioterapia | Fisioterapeuta: sus pacientes, evaluación, goniometría, Daniels, planes, rutinas, evolución y PDF del área o rutina. |
+| Adrian Chito Vargas | Frontend de Enfermería | Enfermero: panel y resumen PDF del área, sus pacientes, signos, triage, Kardex, camas, hospitalización e informe PDF. |
+| Matias Muñiz | Frontend de Fisioterapia | Fisioterapeuta: panel y resumen PDF del área, sus pacientes, evaluación, goniometría, Daniels, planes, rutinas, evolución e informe/rutina PDF. |
 
 Las contraseñas actuales se entregan por un canal privado. No están en texto plano en el repositorio. El login local usa PBKDF2 con sal individual, 600 000 iteraciones, bloqueo tras cinco intentos y sesión temporal. Las opciones visibles y las operaciones locales comprueban el rol.
 
@@ -34,10 +34,10 @@ El perfil cloud existente de Wilson se cambió de Administrador a Contable en el
 
 ## Funciones por área
 
-- **Enfermería:** alta y consulta de pacientes propios, signos vitales, triage manual, Kardex, estado de cama, ingreso y alta hospitalaria; edición, baja lógica y exportación PDF de informe de paciente.
-- **Fisioterapia:** pacientes propios, evaluación biomecánica, goniometría, escala Daniels, plan y rutina, evolución; edición, baja lógica, informe PDF del paciente y rutina PDF individual.
+- **Enfermería:** panel de pacientes y atenciones locales, resumen PDF del área, alta y consulta de pacientes propios, signos vitales, triage manual, Kardex, estado de cama, ingreso y alta hospitalaria; edición, baja lógica e informe PDF de paciente.
+- **Fisioterapia:** panel de pacientes y atenciones locales, resumen PDF del área, pacientes propios, evaluación biomecánica, goniometría, escala Daniels, plan y rutina, evolución; edición, baja lógica, informe PDF del paciente y rutina PDF individual.
 - **Contabilidad:** cargos a pacientes de ambas áreas, cobros, pagos de la clínica, saldos, filtros, corrección y baja lógica. Es un registro interno académico; no emite facturas tributarias.
-- **Coordinación:** directorio general, alta y mantenimiento de usuarios, revisión del estado de sincronización y acceso a pacientes de ambas áreas. La navegación clínica directa no se ofrece al coordinador.
+- **Coordinación:** panel de pacientes por área y estado, actividad clínica reciente local, cuentas activas, directorio general, alta y mantenimiento de usuarios, estado de sincronización e informe PDF. La navegación clínica directa no se ofrece al coordinador.
 
 ## Ejecutar
 
@@ -55,7 +55,7 @@ npm run build
 npm run preview -- --port 4174
 ```
 
-Para escritorio se requiere Rust y las herramientas nativas de Tauri. El código está en `src-tauri`; `npm run desktop:build` genera paquetes según el sistema operativo y la configuración del entorno. Los instaladores publicados anteriormente pueden no incluir esta revisión reciente de Contabilidad y exportación PDF.
+Para escritorio se requiere Rust y las herramientas nativas de Tauri. En Windows se necesitan Microsoft C++ Build Tools y Windows SDK **para compilar**, aunque CLINOVA no está programada en C++: la interfaz usa React/TypeScript y la parte nativa de Tauri usa Rust. El código está en `src-tauri`; `npm run desktop:build` genera paquetes según el sistema operativo. Un instalador contiene solo el código del commit con que fue compilado; los binarios anteriores no incluyen automáticamente cambios posteriores.
 
 ## Comprobaciones y documentos
 
@@ -65,4 +65,4 @@ python tests/test_sqlite.py
 npm run build
 ```
 
-Las pruebas locales cubren migraciones, roles, CRUD, cola y conflictos simulados. No sustituyen una demostración con dos equipos conectados al Supabase real. La documentación revisada de Semanas 1–4 y el guion de las cuatro cuentas se encuentran en `docs/revision`. Los diagramas y entregas históricos se conservan.
+Las pruebas locales cubren migraciones, roles, CRUD, cola y conflictos simulados. No sustituyen una demostración con dos equipos conectados al Supabase real. La documentación revisada de Semanas 1–4, manuales de usuario y técnico, diagramas y guion de las cuatro cuentas se encuentran en `docs/revision`. Las entregas anteriores se conservan como archivo histórico; para exponer se usa la revisión actual.

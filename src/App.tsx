@@ -6,6 +6,8 @@ import AuthScreen from './components/AccessScreen';
 import Management from './components/Management';
 import ClinicalModule from './components/ClinicalModule';
 import FinanceModule from './components/FinanceModule';
+import AdminOverview from './components/AdminOverview';
+import AreaOverview from './components/AreaOverview';
 import SyncPanel,{SyncBadge} from './components/SyncPanel';
 import {startSync} from './sync';
 import {useOfflineStatus} from './offline';
@@ -78,6 +80,8 @@ export default function App(){
     {loading?<p className="panel">Abriendo almacenamiento local…</p>:
      accountant&&view==='dashboard'?<FinanceModule patients={accessible} mode="ledger"/>:
      accountant&&view==='patients'?<FinanceModule patients={accessible} mode="patients"/>:
+     admin&&view==='dashboard'?<AdminOverview patients={accessible} records={visibleRecords} onOpen={go}/>:
+     (nursing||physio)&&view==='dashboard'?<AreaOverview area={nursing?'Enfermería':'Fisioterapia'} patients={accessible} records={visibleRecords} onOpen={()=>go(nursing?'nursing':'physio')}/>:
      view==='dashboard'?<>
       <section className="stats"><Stat label="Pacientes registrados" value={accessible.length} detail={admin?'Ambas áreas':'Tu área'} icon={<Users/>}/><Stat label="En atención" value={accessible.filter(p=>p.status==='En atención').length} detail="Estado actual" icon={<Stethoscope/>}/><Stat label="Registros guardados" value={visibleRecords.length} detail="Almacenamiento local" icon={<ClipboardList/>}/><Stat label="Áreas disponibles" value={admin?2:1} detail="Según tu rol" icon={<Activity/>}/></section>
       <section className="module-grid">

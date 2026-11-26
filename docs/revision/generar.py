@@ -15,10 +15,10 @@ from reportlab.pdfbase.ttfonts import TTFont
 HERE=Path(__file__).resolve().parent
 pdfmetrics.registerFont(TTFont('Arial',r'C:\Windows\Fonts\arial.ttf'))
 pdfmetrics.registerFont(TTFont('Arial-Bold',r'C:\Windows\Fonts\arialbd.ttf'))
-NAVY=colors.HexColor('#0b344b')
-TEAL=colors.HexColor('#087d91')
-PALE=colors.HexColor('#e9f5f7')
-MUTED=colors.HexColor('#425b69')
+NAVY=colors.HexColor('#111111')
+TEAL=colors.HexColor('#262626')
+PALE=colors.HexColor('#f2f2f2')
+MUTED=colors.HexColor('#484848')
 S=getSampleStyleSheet()
 S.add(ParagraphStyle(name='CoverX',fontName='Arial-Bold',fontSize=23,leading=28,textColor=NAVY,spaceAfter=16))
 S.add(ParagraphStyle(name='SubX',fontName='Arial',fontSize=11,leading=16,textColor=MUTED,spaceAfter=10))
@@ -108,12 +108,12 @@ roles=[
   ['wilson','Contable','Contabilidad, Pacientes'],
   ['adrian','Enfermero','Mi área, Enfermería, Sincronización'],
   ['matias','Fisioterapeuta','Mi área, Fisioterapia, Sincronización']], [65,95,351])),
- ('h','Jeshua · Coordinación e integración'),('b','Entrar y mostrar el resumen: pacientes, atención y estado del espacio de trabajo.'),('b','En Pacientes, explicar alta, edición, estado y baja de una ficha de ambas áreas. En Usuarios, explicar cuenta personal, rol y bloqueo de acceso. Pulsar Exportar directorio PDF.'),('b','En Sincronización, enseñar pendientes, última confirmación y conflictos. Aclarar que la Web usa IndexedDB, escritorio usa SQLite y el servidor real es Supabase/PostgreSQL.'),('t','Frase natural: “Yo coordino el sistema. Desde aquí organizo las fichas y los accesos, y puedo comprobar si los cambios clínicos llegaron al servidor. Las atenciones las hacen Adrian y Matias en sus propias cuentas.”'),
+ ('h','Jeshua · Coordinación e integración'),('b','Entrar a Coordinación y mostrar tarjetas de ambas áreas, estados de pacientes, actividad reciente local y cuentas activas. Descargar Informe de coordinación PDF.'),('b','En Pacientes, explicar alta, edición, estado y baja de una ficha de ambas áreas. En Usuarios, explicar cuenta personal, rol y bloqueo de acceso. Pulsar Exportar directorio PDF.'),('b','En Sincronización, enseñar pendientes, última confirmación y conflictos. Aclarar que la Web usa IndexedDB, escritorio usa SQLite y el servidor real es Supabase/PostgreSQL.'),('t','Frase natural: “Yo coordino el sistema. Aquí reviso cómo están las dos áreas, organizo pacientes y accesos y veo si los cambios clínicos llegaron al servidor. Las atenciones las registran Adrian y Matias en sus cuentas.”'),
  ('page',''),('h','Wilson · Contabilidad'),('b','Entrar a Contabilidad. Mostrar tarjetas: cargos, cobros, saldo pendiente y pagos de la clínica.'),('b','Crear un cargo para un paciente de Enfermería o Fisioterapia; registrar un cobro parcial y enseñar cómo disminuye el saldo. Intentar un cobro mayor que el saldo y explicar la validación.'),('b','Registrar un pago/gasto interno. Buscar, filtrar, editar, dar de baja un movimiento y exportar resumen PDF. En Pacientes, mostrar únicamente nombre, área, estado y saldo; no hay signos ni rutinas.'),('t','Frase natural: “Yo llevo los movimientos internos: lo que se cobra por atención, lo recibido y los pagos de la clínica. Puedo ver pacientes de las dos áreas para asociar cargos, pero no editar su historia clínica. Por ahora esta contabilidad queda en este dispositivo; falta conectarla a Supabase.”'),
  ('s','Permisos y límite actual'),('t','Wilson puede leer las fichas generales de ambas áreas porque necesita seleccionar un paciente para cobrar. No puede abrir las pestañas clínicas ni administrar cuentas. El módulo calcula saldos en centavos y rechaza un cobro superior a los cargos. Sus movimientos persisten en IndexedDB o SQLite, según la plataforma. Aún no se sincronizan entre equipos mediante Supabase; para la demostración se usa el mismo dispositivo.'),
- ('page',''),('h','Adrian · Enfermería'),('b','Entrar a Enfermería y crear/abrir un paciente del área.'),('b','Registrar temperatura, pulso, presión, saturación y nivel de triage. Abrir Kardex y guardar medicamento, dosis, vía, frecuencia y estado.'),('b','Mostrar cama disponible, ingreso, ocupación y alta. Editar una entrada para mostrar historial. Pulsar “Exportar informe PDF” para descargar el registro del paciente.'),('t','Frase natural: “Mi cuenta se queda en Enfermería. Aquí documento la valoración, medicamentos y hospitalización. El informe PDF recoge solo los datos de esta área.”'),
+ ('page',''),('h','Adrian · Enfermería'),('b','Entrar a Mi área, leer cifras y actividad reciente; descargar el resumen PDF. Después abrir Enfermería y crear/abrir un paciente.'),('b','Registrar temperatura, pulso, presión, saturación y nivel de triage. Abrir Kardex y guardar medicamento, dosis, vía, frecuencia y estado.'),('b','Mostrar cama disponible, ingreso, ocupación y alta. Editar una entrada para mostrar historial. Pulsar “Exportar informe PDF” para descargar el registro del paciente.'),('t','Frase natural: “Mi cuenta se queda en Enfermería. Aquí documento la valoración, medicamentos y hospitalización. Puedo descargar el resumen del área o el informe de un paciente.”'),
  ('s','Qué validar ante el profesor'),('t','Si una medicación se marca Administrada, el sistema exige una fecha de administración. Para hospitalización hay que elegir una cama libre: no se permiten dos ingresos activos en la misma cama ni dos camas simultáneas para el mismo paciente. Un alta libera la cama. El triage se registra como prioridad seleccionada; el programa no realiza diagnóstico médico.'),
- ('page',''),('h','Matias · Fisioterapia'),('b','Entrar a Fisioterapia y crear/abrir un paciente del área.'),('b','Guardar evaluación: articulación, movimiento, grados de goniometría, Daniels y dolor. Crear rutina con objetivo, ejercicios, frecuencia y fechas.'),('b','Registrar una evolución vinculada al plan. Exportar el informe completo y el PDF de una rutina concreta.'),('t','Frase natural: “Yo registro la valoración física y el progreso. El plan deja claros los ejercicios y el seguimiento; puedo entregar la rutina como PDF aparte.”'),
+ ('page',''),('h','Matias · Fisioterapia'),('b','Entrar a Mi área, leer cifras y actividad reciente; descargar el resumen PDF. Después abrir Fisioterapia y crear/abrir un paciente.'),('b','Guardar evaluación: articulación, movimiento, grados de goniometría, Daniels y dolor. Crear rutina con objetivo, ejercicios, frecuencia y fechas.'),('b','Registrar una evolución vinculada al plan. Exportar el informe completo y el PDF de una rutina concreta.'),('t','Frase natural: “Yo registro la valoración física y el progreso. Puedo mostrar un resumen del área, el informe del paciente y la rutina como PDF aparte.”'),
  ('s','Qué validar ante el profesor'),('t','La goniometría admite 0–360 grados, Daniels 0–5 y dolor 0–10. La rutina requiere objetivo, ejercicios, frecuencia y fechas coherentes; la evolución se vincula a un plan del mismo paciente. El PDF individual incluye solo la rutina elegida, mientras el informe de área recoge la historia local de Fisioterapia de ese paciente.'),
  ('h','Cierre honesto'),('t','La prueba offline consiste en cargar antes la Web, desconectar internet, guardar un registro clínico, comprobarlo localmente, reconectar y observar la sincronización. Wilson puede trabajar offline con su contabilidad, pero esos movimientos no se comparten por Supabase todavía. Las credenciales cloud deben existir y coincidir para que el intercambio clínico funcione.')
 ]
@@ -121,14 +121,14 @@ roles=[
 week1 += [
  ('page',''),('h','Decisiones de diseño explicadas con precisión'),
  ('s','Por qué React + Tauri'),('t','La interfaz React y TypeScript se comparte entre Web y escritorio. En navegador, la aplicación usa las APIs del navegador y IndexedDB; en Windows y Linux, Tauri ofrece una ventana nativa y un puente con SQLite. Esto permite mantener pantallas y reglas de negocio próximas, aunque las implementaciones de almacenamiento son diferentes. No existe una aplicación Android o iOS en esta entrega.'),
- ('s','Mapa de actores'),('t','La guía original exigía tres actores: Administrador, Enfermero y Fisioterapeuta. El Administrador organiza pacientes y cuentas; Enfermero registra la atención de Enfermería; Fisioterapeuta registra la rehabilitación. La extensión posterior incorpora Contable para cargos y cobros. El caso de uso impreso de Semana 1 representa la versión exigida en ese momento; al exponer hoy, se debe mencionar la ampliación.'),
+ ('s','Mapa de actores'),('t','La guía original exigía tres actores: Administrador, Enfermero y Fisioterapeuta. El Administrador organiza pacientes y cuentas; Enfermero registra la atención de Enfermería; Fisioterapeuta registra la rehabilitación. La extensión posterior incorpora Contable para cargos y cobros. El PDF CASOS_DE_USO_ACTUALIZADOS representa las cuatro cuentas actuales y señala que la cuarta fue agregada después.'),
  ('s','Navegación actual'),('t','Jeshua abre Coordinación, Pacientes, Usuarios y Sincronización. Wilson abre Contabilidad y Pacientes. Adrian abre su panel y Enfermería. Matias abre su panel y Fisioterapia. Cada usuario inicia y cierra sesión por separado. Las rutas se filtran por rol en la interfaz y las operaciones locales se validan de nuevo antes de escribir.'),
  ('h','Relación entre los cuatro integrantes y el código'),
  ('b','Jeshua integra el frontend, el motor de sincronización y las compilaciones. Su cuenta demuestra el directorio general y las cuentas locales.'),
  ('b','Wilson diseñó persistencia y autenticación. Su cuenta actual demuestra además el nuevo registro contable. Esta asignación de interfaz cambió después de las semanas iniciales.'),
  ('b','Adrian implementa el formulario y flujo de Enfermería con validaciones clínicas, camas, Kardex e informe de área.'),
  ('b','Matias implementa evaluación, rutinas y evolución; su PDF separa el informe completo de una rutina concreta.'),
- ('h','Material para la revisión'),('t','El profesor puede seguir el UML impreso con el código abierto y la Web publicada. Conviene explicar que los bocetos son una propuesta inicial y la interfaz que se ve hoy es una evolución. Si un instalador anterior muestra otra navegación, su fecha de compilación es anterior a esta revisión y no representa el mismo commit.')
+ ('h','Material para la revisión'),('t','El profesor puede seguir el UML impreso con el código abierto y la Web publicada. Los bocetos representan una propuesta inicial y la interfaz actual es una evolución. Un instalador solo muestra las funciones incluidas en la fecha y el commit con que fue compilado.')
 ]
 week2 += [
  ('page',''),('h','Detalle técnico del almacenamiento y las migraciones'),
@@ -153,12 +153,133 @@ week4 += [
  ('h','Alcance de las pruebas presentables'),('b','Pruebas unitarias y de integración local: roles, autenticación, migraciones, saldos, cola y conflictos.'),('b','Ensayo de 500 altas: mide escrituras en IndexedDB simulado y no la capacidad de PostgreSQL.'),('b','Prueba Web real: usar navegador y revisar formularios, botones, persistencia y exportaciones. La demostración offline debe empezar después de la carga inicial.'),('b','Prueba cruzada entre grupos: requiere participación efectiva de otro equipo; si no consta, marcarla pendiente.'),('h','Entregas y límites'),('t','La guía pide el diagrama de secuencia impreso, manual de usuario y técnico en borrador, y binarios Windows/Linux. El README describe cómo desarrollar la Web y ubica el proyecto. La URL Hostinger permite presentar la Web sin instalar nada. Las actualizaciones de Web, código GitHub e instaladores tienen ciclos distintos: un cambio en la Web no reescribe un MSI, EXE, DEB o AppImage ya compilado. Antes de presentar un instalador hay que comprobar su versión exacta.')
 ]
 
+week1.extend([
+ ('page',''),('h','Cuatro criterios de la rúbrica de Semana 1'),
+ ('table',(['Criterio','Entregable y explicación que sí corresponde'],[
+  ['Gantt y roles · 25','Cronograma de cinco semanas con Jeshua en integración, Wilson en datos y autenticación, Adrian en Enfermería y Matias en Fisioterapia. Contabilidad se asignó después.'],
+  ['Casos de uso · 25','Imprimir CASOS_DE_USO_ACTUALIZADOS.pdf. Explicar los tres actores pedidos en la guía y la ampliación posterior Contable.'],
+  ['Base multiplataforma · 30','React y TypeScript comparten interfaz. Navegador: IndexedDB. Escritorio: Tauri y SQLite. Los módulos clínicos completos se agregaron después.'],
+  ['Repositorio · 20','github.com/chitoadrian/CLINOVA contiene código, README y documentación.']], [120,391])),
+ ('h','Qué decir sobre C++ si el profesor pregunta'),('t','CLINOVA no fue programada en C++. La interfaz está escrita en React y TypeScript. Tauri empaqueta la aplicación de escritorio y su parte nativa usa Rust. Para compilar en Windows se necesitaron las herramientas Microsoft C++ Build Tools y Windows SDK: son herramientas del entorno de construcción, no una pantalla ni una función del programa. En Linux se generan otros paquetes. El navegador no necesita instalar C++.'),
+ ('s','Lo añadido después de Semana 1'),('t','CRUD de pacientes y usuarios, seguridad local, módulos clínicos, Supabase, exportaciones PDF, Contabilidad y el panel ampliado de coordinación pertenecen a la evolución posterior. El UML actualizado muestra la aplicación actual para evitar confundir al profesor, pero al hablar de la rúbrica inicial se separan esos momentos.'),
+ ('h','Orden simple para demostrar'),('b','Enseñar la portada del Gantt y decir quién se responsabiliza de cada área.'),('b','Mostrar el UML impreso y recorrer las cuatro cuentas actuales, señalando la ampliación Contable.'),('b','Abrir login y menú de cada perfil; mostrar que el repositorio tiene README y código.'),
+])
+week2.extend([
+ ('page',''),('h','Los cuatro criterios de Semana 2'),
+ ('table',(['Criterio','Evidencia disponible'],[
+  ['DER · 30','DER_ACTUALIZADO_LOCAL_Y_SUPABASE.pdf. La página local muestra PK, FK y relaciones; la página cloud explica el esquema de intercambio actual.'],
+  ['BD local · 30','SQLite: src-tauri/migrations/001–007. Web: IndexedDB en src/core/web.ts. Crear una ficha, recargar y comprobar que permanece.'],
+  ['Autenticación · 20','Pantalla de acceso, src/core/password.ts, src/core/web.ts y src-tauri/src/clinic.rs: hashes PBKDF2 con sal, bloqueo y permisos.'],
+  ['Gantt · 20','Cronograma con hitos realmente hechos. La sincronización y Contabilidad se distinguen como evolución posterior.']], [123,388])),
+ ('h','Ruta de un dato de paciente'),('t','El formulario valida nombre, edad, área, motivo y estado. El motor local asigna un UUID y una versión. En navegador lo escribe en IndexedDB; en escritorio, en SQLite. Al volver a abrir el directorio, el dato se lee de ese almacenamiento. La baja marca deleted_at para conservar historial. La cuenta del profesional solo accede a su área; Jeshua ve el directorio completo; Wilson consulta ambas áreas para asociar cobros, sin ver los valores clínicos.'),
+ ('s','Dónde entra Supabase de verdad'),('t','El proyecto real CLINOVA en Supabase tiene identificador gcsodpalqwwpsiodeeil. La función clinova-api recibe operaciones clínicas autenticadas. PostgreSQL conserva documentos, versiones y recibos de operación en el esquema clinova. Esto complementa la base local: no sustituye IndexedDB ni SQLite ni significa que cada tabla local exista idéntica en la nube. La Contabilidad agregada después permanece local.'),
+ ('h','Demostración segura'),('b','Abrir el DER y señalar PK de users/patients, FK de credenciales y encuentros, y relación con los datos clínicos.'),('b','Iniciar sesión, crear una ficha ficticia, recargar y encontrarla. Después cerrar sesión.'),('b','Mostrar los cuatro menús. No proyectar contraseñas ni hashes ni usar datos reales de pacientes.'),
+])
+week3.extend([
+ ('page',''),('h','Recorrido práctico de Semana 3'),
+ ('s','Adrian · Enfermería'),('t','Abre Enfermería, registra un paciente ficticio y una atención con temperatura, pulso, presión, saturación y prioridad de triage elegida. Después enseña Kardex, crea un medicamento con dosis y horario, muestra camas, ingreso y alta. Puede editar o dar de baja una entrada y descargar el informe PDF del paciente. El sistema valida rangos y evita dos ingresos activos en la misma cama.'),
+ ('s','Matias · Fisioterapia'),('t','Abre Fisioterapia, registra región, lado, movimiento, goniometría, escala Daniels y dolor. Crea un plan con objetivos y ejercicios, registra una evolución vinculada y descarga la rutina individual o el informe del paciente. La fuerza Daniels y el dolor tienen rangos validados. No se afirma que el programa calcule diagnósticos o prescriba tratamientos automáticamente.'),
+ ('s','Wilson y Jeshua · sincronización'),('t','La integración clínica usa una cola local. Jeshua puede abrir Sincronización para ver conexión cloud, pendientes, última transferencia y conflictos. Wilson construyó la persistencia y la API en su responsabilidad del proyecto; su cuenta actual Contable no muestra esta pantalla porque sus movimientos aún no se envían a Supabase.'),
+ ('h','Prueba offline-online que se puede repetir'),('b','Cargar la Web con internet y conectar una cuenta cloud válida del área.'),('b','Desconectar, crear una ficha ficticia, cambiar de pantalla y observar que sigue guardada y pendiente.'),('b','Reconectar, sincronizar y esperar confirmación de la API. Si hay una segunda sesión autorizada, consultar allí el mismo registro.'),('b','Si no aparece confirmación, mostrar el estado de error o pendiente. La etiqueta Red disponible por sí sola no prueba que Supabase haya recibido datos.'),
+ ('h','El DFD impreso'),('t','Se imprimen las dos páginas: contexto y nivel 1. La primera identifica personal, CLINOVA y Supabase. La segunda sigue el dato desde el guardado local hacia la cola, el envío autenticado a la Edge Function, PostgreSQL, la confirmación y la resolución de conflictos. Es el flujo clínico; no representa los movimientos de Contabilidad.'),
+])
+week4.extend([
+ ('page',''),('h','Pruebas y entregables sin exageraciones'),
+ ('table',(['Requisito','Qué se hizo / qué falta comprobar'],[
+  ['Secuencias · 20','PDF de tres secuencias: acceso local, guardado offline y resolución de conflicto. Imprimirlo.'],
+  ['Estrés y cruce · 30','Existen pruebas de código y ensayo de 500 fichas sobre IndexedDB simulado. La revisión de otro grupo debe documentarse si realmente se realiza; no se puede adjudicar como hecha.'],
+  ['Manuales · 30','Manuales de usuario y técnico en PDF y versión Web. Esta revisión elimina instrucciones de móvil y explica perfiles, almacenamiento y límites reales.'],
+  ['Binarios · 20','GitHub Actions compiló instaladores Windows (MSI/EXE) y Linux (AppImage/DEB). Un cambio posterior de código requiere recompilar para que el binario lo contenga.']], [119,392])),
+ ('h','C++ y los instaladores'),('t','Para construir Tauri en Windows se usan Rust y componentes Microsoft C++ Build Tools / Windows SDK. Es una dependencia de compilación. CLINOVA no usa C++ como lenguaje de la interfaz ni pide al usuario final escribir C++. La Web se abre en navegador; los paquetes de escritorio se instalan según el sistema operativo.'),
+ ('s','Cómo presentar la evidencia'),('b','Abrir el diagrama de secuencia impreso y seguir el orden de los mensajes: usuario, interfaz, almacenamiento local, API y respuesta.'),('b','Abrir el manual de usuario y ejecutar una operación real por perfil con datos ficticios.'),('b','Mostrar el resultado de npm test, el ensayo local y el build Web. Separar pruebas simuladas de pruebas contra el servidor real.'),('b','Mostrar los archivos MSI/EXE y AppImage/DEB. La compilación CI es evidencia de generación; probar la instalación concreta requiere ejecutarla en cada sistema.'),
+ ('s','Límites actuales que deben quedar claros'),('t','Los cobros de Wilson no viajan a Supabase. Los PDF son informes académicos generados desde datos locales. La prueba de 500 fichas no mide PostgreSQL. La revisión cruzada por otro equipo no debe declararse terminada sin su acta o evidencia. La publicación Web puede tener un commit distinto de los instaladores descargados.'),
+])
+
+manual_usuario=[
+ ('h','Cómo entrar y orientarse'),('t','Abrir la Web de CLINOVA con el navegador o el instalador de escritorio. Ingresar el usuario y la contraseña vigentes por separado. El menú cambia con el rol. El interruptor de tema cambia entre claro y oscuro; el botón de cierre termina la sesión local. En la Web, el uso sin red requiere haber cargado antes la aplicación en ese navegador.'),
+ ('table',(['Cuenta','Pantallas visibles','Acción principal'],[
+  ['Jeshua · Administrador','Coordinación, Pacientes, Usuarios, Sincronización','Organizar el directorio, administrar accesos, revisar estados y descargar informe de coordinación.'],
+  ['Wilson · Contable','Contabilidad, Pacientes','Registrar cargos, cobros y gastos; revisar saldos y descargar resumen.'],
+  ['Adrian · Enfermero','Mi área, Enfermería, Sincronización','Registrar atención, signos, triage, Kardex, camas e informe.'],
+  ['Matias · Fisioterapeuta','Mi área, Fisioterapia, Sincronización','Registrar evaluación, plan, rutina, evolución e informes.']], [112,173,226])),
+ ('h','Jeshua: coordinación'),('b','En Coordinación, leer las tarjetas por área y estado, la actividad reciente local y los accesos a gestión.'),('b','En Pacientes, crear, editar, buscar o dar de baja una ficha de cualquiera de las dos áreas. Exportar el directorio desde el encabezado.'),('b','En Usuarios, crear una cuenta individual, seleccionar rol, activar o desactivar. No dar de baja la propia cuenta desde esa pantalla.'),('b','En Sincronización, conectar su cuenta cloud, revisar pendientes, errores, conflictos y generar invitaciones cuando corresponda. Descargar Informe de coordinación PDF desde el panel.'),
+ ('page',''),('h','Wilson: Contabilidad'),('b','Abrir Pacientes para localizar una ficha de cualquiera de las dos áreas. La cuenta no muestra signos, tratamientos ni usuarios.'),('b','Crear un cargo y asociarlo a un paciente. Registrar un cobro parcial o total; el sistema rechaza cobrar más de lo pendiente.'),('b','Registrar un gasto interno sin paciente. Buscar, filtrar, editar o dar de baja un movimiento; exportar el resumen PDF.'),('t','Los datos contables se guardan únicamente en este dispositivo. El resumen no es factura ni comprobante tributario. Si se abre Wilson en otro equipo, no se deben esperar esos movimientos allí.'),
+ ('h','Adrian: Enfermería'),('b','Registrar o buscar un paciente de Enfermería. Abrir su ficha.'),('b','Completar signos vitales y triage. El nivel de triage lo selecciona el profesional.'),('b','Abrir Kardex para medicamento, dosis, vía, frecuencia y estado. Administrado requiere fecha correspondiente.'),('b','Mostrar camas, ingreso y alta; una cama ocupada no puede asignarse a otro ingreso activo. Exportar informe PDF.'),
+ ('h','Matias: Fisioterapia'),('b','Registrar o buscar un paciente de Fisioterapia y crear una evaluación.'),('b','Indicar región, lado, movimiento, grados, fuerza Daniels y dolor. Crear plan/rutina con objetivo, ejercicios y fechas.'),('b','Registrar evolución asociada al plan. Descargar informe del paciente o PDF de la rutina elegida.'),
+ ('page',''),('h','Qué pasa sin internet'),('t','Las operaciones se guardan primero en el dispositivo. La Web necesita una primera carga online para conservar recursos en caché. Si se desconecta la red, los cambios clínicos quedan pendientes. Al volver la conexión, una cuenta cloud autorizada puede sincronizarlos con Supabase. El estado completado debe aparecer después de la respuesta del servidor. Si muestra error o pendiente, el dato sigue local. Contabilidad permanece local incluso con internet.'),
+ ('h','Exportaciones'),('t','Las descargas PDF salen de los datos que tiene el dispositivo en ese momento. El Administrador obtiene directorio e informe de coordinación; Enfermería, informe del paciente; Fisioterapia, informe y rutina; Contabilidad, resumen de movimientos. Revisar el documento antes de compartirlo y no usar datos reales en la exposición académica.'),
+ ('h','Problemas frecuentes'),('b','No aparece un módulo: verificar el rol de la cuenta. Los permisos también se comprueban al guardar.'),('b','No aparecen cambios de otro equipo: revisar cuenta cloud, área, estado de sincronización y conexión; Wilson no tiene sync contable.'),('b','La Web no abre offline por primera vez: cargarla antes con internet en el mismo navegador y origen.'),('b','Un PDF no muestra una edición reciente: comprobar que el formulario se guardó y volver a exportar.'),
+]
+manual_tecnico=[
+ ('h','Componentes comprobables en el repositorio'),('table',(['Capa','Tecnología','Archivo principal'],[
+  ['Interfaz','React + TypeScript + Vite','src/App.tsx; src/components; src/theme.css'],
+  ['Web local','IndexedDB + Service Worker','src/core/web.ts; src/offline.ts'],
+  ['Escritorio','Tauri + Rust + SQLite','src-tauri/src; src-tauri/migrations'],
+  ['Servidor clínico','Supabase Auth + Edge Function + PostgreSQL','supabase/functions/clinova-api; supabase/schema.sql'],
+  ['PDF','jsPDF en cliente','src/pdf-export.ts']], [100,160,251])),
+ ('h','Modelo y permisos'),('t','La Web usa IndexedDB versión 4. SQLite aplica migraciones 001–007 con relaciones, índices y restricciones. La migración 007 agrega financial_entries y el rol Contable. Usuarios, credenciales, pacientes, encuentros, signos, triage, evaluaciones, planes y elementos clínicos persisten localmente. Las bajas son lógicas y llevan versión. Las operaciones comprueban rol además de filtrar el menú.'),
+ ('s','Autenticación'),('t','Las cuentas locales verifican PBKDF2-SHA256 con sal e iteraciones, guardan intentos fallidos y crean sesión temporal. No se conserva la contraseña en claro. La identidad de Supabase Auth es separada y se usa para sincronización clínica; la Edge Function valida JWT y rol del miembro cloud. La clave de servicio no debe estar en el cliente.'),
+ ('page',''),('h','Sincronización clínica'),('t','El guardado escribe el dato y su operación pendiente. Al reconectar, Sync Engine envía hasta 50 operaciones con identificadores UUID, op_id y revisión base a clinova-api. PostgreSQL guarda el estado en clinova.records, historial en revisions y recibos idempotentes en receipts. Las respuestas incluyen confirmaciones, cambios y cursor. Una revisión antigua genera conflicto y conserva ambas versiones para una elección explícita. El rol Contable no participa en este flujo.'),
+ ('s','Proyecto Supabase real'),('t','CLINOVA: gcsodpalqwwpsiodeeil, región sa-east-1, URL https://gcsodpalqwwpsiodeeil.supabase.co. El esquema clinova contiene roles, members, invitations, records, revisions y receipts con RLS. El esquema cloud representa intercambio documental, no una copia uno a uno de las tablas SQLite. No se modificó AC-Edunity.'),
+ ('h','Compilación y el papel de C++'),('t','Ejecutar npm ci, npm run build y npm test para Web. Tauri empaqueta la misma interfaz como escritorio; su código nativo es Rust. En Windows, MSVC y Windows SDK son herramientas externas para compilar/enlazar el instalador, no el lenguaje de la aplicación. GitHub Actions generó paquetes MSI y EXE para Windows, AppImage y DEB para Linux. Cada cambio posterior requiere otra compilación para entrar en esos binarios.'),
+ ('h','Verificación y límites'),('b','npm test comprueba lógica local, roles, cola y conflictos con respuestas simuladas.'),('b','python tests/test_sqlite.py comprueba migraciones, restricciones y CRUD SQLite.'),('b','npm run build compila TypeScript y genera la Web; el resultado no demuestra una demo con dos equipos.'),('b','La revisión cruzada necesita evidencia de otro grupo y la instalación nativa debe probarse en el sistema correspondiente. La contabilidad sigue local.'),
+]
+funciones=[
+ ('h','Jeshua Sánchez Alcívar · Administrador'),('t','Su cuenta coordina el trabajo y administra accesos. No escribe signos vitales ni planes de rehabilitación.'),
+ ('table',(['Pantalla o botón','Función que puede mostrar'],[
+  ['Coordinación','Cuatro cifras: pacientes totales, Enfermería, Fisioterapia y cuentas activas. Gráfico de estados en espera / atención / alta. Actividad clínica reciente local sin desplegar valores médicos.'],
+  ['Ver pacientes','Abre el directorio de las dos áreas. Buscar por nombre, crear ficha, editar datos generales y dar de baja con confirmación.'],
+  ['Usuarios y permisos','Crear cuenta, asignar uno de los cuatro roles, cambiar nombre, usuario o clave, activar/desactivar y dar de baja otra cuenta.'],
+  ['Sincronización','Conectar identidad cloud, revisar pendientes, última respuesta, errores y conflictos; sincronizar ahora. Generar invitación cloud para un integrante autorizado.'],
+  ['Exportar directorio PDF','Descarga nombres, áreas, edades, estados y motivos de las fichas locales.'],
+  ['Informe de coordinación PDF','Descarga cifras por área y estado, cuentas locales activas, número de atenciones y listado básico de pacientes.']], [127,384])),
+ ('h','Cómo explicarlo mientras navega'),('b','Abrir Coordinación, leer cifras y aclarar que son de este dispositivo; descargar el informe.'),('b','Entrar a Pacientes y Usuarios para mostrar que los permisos se asignan de forma individual.'),('b','Entrar a Sincronización y explicar que Supabase guarda los cambios clínicos confirmados, no los cobros de Wilson.'),
+ ('s','Límite'),('t','El botón Red disponible indica conexión de red, no recepción en Supabase. Para afirmar sincronización hay que ver la confirmación en el panel. Los datos agregados en el informe son locales.'),
+ ('page',''),('h','Wilson Pinela · Contable'),('t','Su cuenta maneja dinero académico de la clínica y consulta fichas generales de ambas áreas para asociar cobros. No ve atenciones, rutinas ni gestión de usuarios.'),
+ ('table',(['Pantalla o botón','Función que puede mostrar'],[
+  ['Contabilidad','Tarjetas de cargos, cobros, saldo pendiente, pagos/gastos y flujo neto.'],
+  ['Nuevo cargo','Asocia concepto y monto a un paciente de Enfermería o Fisioterapia.'],
+  ['Registrar cobro','Anota un pago recibido por paciente; no permite superar el saldo de cargos pendientes.'],
+  ['Registrar pago','Anota un gasto de la clínica sin paciente.'],
+  ['Movimientos','Busca por paciente, concepto o referencia; filtra cargos, cobros y gastos; edita o da de baja con historial local.'],
+  ['Pacientes','Consulta nombre, área, estado y saldo de las dos áreas.'],
+  ['Exportar resumen PDF','Descarga totales y movimientos contables desde el dispositivo actual.']], [127,384])),
+ ('h','Cómo explicarlo mientras navega'),('b','Abrir Pacientes, elegir una ficha ficticia y volver a Contabilidad.'),('b','Registrar un cargo y un cobro parcial; mostrar la reducción de saldo. Registrar un gasto.'),('b','Buscar el movimiento, exportar PDF y explicar que aún no es una factura tributaria.'),
+ ('s','Límite'),('t','La contabilidad es local en IndexedDB o SQLite. Aunque haya internet, los movimientos no se sincronizan con Supabase ni aparecen en otro equipo automáticamente.'),
+ ('page',''),('h','Adrian Chito Vargas · Enfermero'),('t','Su cuenta opera solamente Enfermería y sus pacientes. No accede a Fisioterapia, Contabilidad ni Usuarios.'),
+ ('table',(['Pantalla o botón','Función que puede mostrar'],[
+  ['Mi área','Cifras de pacientes propios, atenciones guardadas, pacientes en espera y en atención; actividad reciente local.'],
+  ['Resumen del área PDF','Descarga cifras, listado básico y atenciones locales de Enfermería.'],
+  ['Registrar / editar pacientes','Crea, busca, modifica y da de baja fichas de Enfermería.'],
+  ['Signos y triage','Registra temperatura, pulso, presión, saturación y prioridad elegida; consulta, edita o da de baja una atención.'],
+  ['Kardex','Anota medicamento, dosis, vía, frecuencia, horario y estado de administración.'],
+  ['Hospitalización','Crea camas, ve disponibles/ocupadas, ingresa al paciente y registra el alta para liberar la cama.'],
+  ['Exportar informe PDF','Descarga la ficha clínica local del paciente seleccionado.'],
+  ['Sincronización','Muestra pendientes y confirmaciones de sus datos clínicos con cuenta cloud autorizada.']], [127,384])),
+ ('h','Cómo explicarlo mientras navega'),('b','Crear o elegir un paciente; registrar signos y triage, luego una medicación.'),('b','Mostrar la ocupación de cama y el alta; explicar la validación de cama única.'),('b','Descargar el informe y el resumen del área. El triage es decisión del profesional, no diagnóstico automático.'),
+ ('page',''),('h','Matias Muñiz · Fisioterapeuta'),('t','Su cuenta opera solamente Fisioterapia. No accede a Enfermería, Contabilidad ni Usuarios.'),
+ ('table',(['Pantalla o botón','Función que puede mostrar'],[
+  ['Mi área','Cifras de pacientes propios, atenciones guardadas, espera, atención y actividad reciente local.'],
+  ['Resumen del área PDF','Descarga cifras y listado de Fisioterapia del dispositivo actual.'],
+  ['Registrar / editar pacientes','Crea, busca, modifica o da de baja fichas de Fisioterapia.'],
+  ['Evaluación biomecánica','Guarda región, lado, movimiento, grados de goniometría, fuerza Daniels y dolor.'],
+  ['Plan y rutina','Define objetivo, ejercicios, frecuencia, fechas y referencia opcional a evaluación. Cada rutina puede descargarse en PDF.'],
+  ['Evolución','Registra sesiones vinculadas a un plan, dolor, grados y progreso; ve comparación inicial/final.'],
+  ['Exportar informe PDF','Descarga el historial local del paciente seleccionado.'],
+  ['Sincronización','Envía y recibe datos clínicos autorizados mediante la cuenta cloud.']], [127,384])),
+ ('h','Cómo explicarlo mientras navega'),('b','Abrir una ficha, guardar evaluación con grados y Daniels, y crear una rutina.'),('b','Registrar una evolución y mostrar la comparación de sesiones.'),('b','Descargar la rutina individual y el informe completo; distinguir esos dos documentos.'),
+ ('s','Límite'),('t','El sistema documenta mediciones y planes introducidos por el profesional; no diagnostica ni genera ejercicios automáticamente. Los PDF reflejan los datos locales presentes al momento de exportar.'),
+]
+
 for name,title,blocks in [
  ('SEMANA_1_CORREGIDA.pdf','Semana 1 · arquitectura y roles',week1),
  ('SEMANA_2_CORREGIDA.pdf','Semana 2 · datos y seguridad',week2),
  ('SEMANA_3_CORREGIDA.pdf','Semana 3 · clínica y sincronización',week3),
  ('SEMANA_4_CORREGIDA.pdf','Semana 4 · QA y manuales',week4),
- ('GUION_CUATRO_CUENTAS.pdf','Guion de exposición · cuatro cuentas',roles)]:
+ ('GUION_CUATRO_CUENTAS.pdf','Guion de exposición · cuatro cuentas',roles),
+ ('FUNCIONES_DE_LAS_CUATRO_CUENTAS.pdf','Funciones por cuenta · CLINOVA',funciones),
+ ('MANUAL_USUARIO_REVISADO.pdf','Manual de usuario · CLINOVA',manual_usuario),
+ ('MANUAL_TECNICO_REVISADO.pdf','Manual técnico · CLINOVA',manual_tecnico)]:
  print(build(name,title,common,blocks))
 
 def der_diagram():

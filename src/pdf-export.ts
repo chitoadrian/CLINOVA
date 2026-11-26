@@ -1,4 +1,4 @@
-import type {Area,Patient,RecordEntry,FinanceEntry} from './core/model';
+import type {Area,Patient,RecordEntry,FinanceEntry,User} from './core/model';
 import type {ClinicalItem} from './core/clinical';
 
 const titles:Record<string,string>={encounter:'Atención y evaluación',kardex:'Kardex de medicamentos',bed:'Cama',admission:'Hospitalización',routine:'Plan y rutina de rehabilitación',evolution:'Evolución'};
@@ -47,6 +47,33 @@ async function exportLines(title:string,lines:string[],filename:string){
 }
 export function exportDirectoryPdf(patients:Patient[]){
  return exportLines('Directorio general de pacientes',patients.map(p=>`${p.name} | ${p.area} | ${p.age} años | ${p.status} | ${p.reason}`),'CLINOVA_Directorio_Pacientes.pdf');
+}
+export function exportAdminReportPdf(patients:Patient[],records:RecordEntry[],users:User[]){
+ const count=(area:Area)=>patients.filter(p=>p.area===area).length;
+ const status=(state:string)=>patients.filter(p=>p.status===state).length;
+ const lines=[
+  `Pacientes locales: ${patients.length} | Enfermería: ${count('Enfermería')} | Fisioterapia: ${count('Fisioterapia')}`,
+  `En espera: ${status('En espera')} | En atención: ${status('En atención')} | Alta: ${status('Alta')}`,
+  `Cuentas locales activas: ${users.filter(u=>u.active).length} de ${users.length}`,
+  `Registros clínicos locales: ${records.length}`,
+  'Equipo: '+users.map(u=>`${u.name} (${u.role}, ${u.active?'activo':'inactivo'})`).join('; '),
+  ...patients.map(p=>`${p.name} | ${p.area} | ${p.status} | ${p.age} años`),
+  'Este informe resume el dispositivo actual. No certifica que todos los cambios estén sincronizados con Supabase.'
+ ];
+ return exportLines('Informe de coordinación',lines,'CLINOVA_Informe_Coordinacion.pdf');
+}
+export function exportAreaSummaryPdf(area:Area,patients:Patient[],records:RecordEntry[]){
+ const relevant=patients.filter(p=>p.area===area);
+ const names=new Map(relevant.map(p=>[p.id,p.name]));
+ const entries=records.filter(r=>r.kind===area&&names.has(r.patientId));
+ const lines=[
+  `Pacientes del área: ${relevant.length} | En espera: ${relevant.filter(p=>p.status==='En espera').length} | En atención: ${relevant.filter(p=>p.status==='En atención').length} | Alta: ${relevant.filter(p=>p.status==='Alta').length}`,
+  `Atenciones locales guardadas: ${entries.length}`,
+  ...relevant.map(p=>`${p.name} | ${p.age} años | ${p.status} | ${p.reason}`),
+  ...entries.map(r=>`Atención: ${names.get(r.patientId)} | ${new Date(r.created_at??r.createdAt).toLocaleDateString('es-EC')} | ${r.author}`),
+  'Resumen generado desde este dispositivo; no certifica sincronización cloud.'
+ ];
+ return exportLines(`Resumen de ${area}`,lines,`CLINOVA_Resumen_${file(area)}.pdf`);
 }
 export function exportFinancePdf(entries:FinanceEntry[],patients:Patient[]){
  const name=new Map(patients.map(p=>[p.id,p.name]));
