@@ -4,7 +4,7 @@ Calidad, documentación y preparación de compilaciones · versión 0.4.0.
 
 Unidad Educativa Montepiedra · Diseño y Desarrollo Web · 3.º de Bachillerato · Grupo 3.
 
-Continúa el código integrado de Semana 3. Conserva autenticación, pacientes, módulos y sincronización. Las entregas anteriores no se sobrescribieron. El hosting conserva la versión anterior; esta entrega se ejecuta localmente.
+Continúa el código integrado de Semana 3. Conserva autenticación, pacientes, módulos y sincronización. Las entregas anteriores no se sobrescribieron. La versión Web con espacios diferenciados de Jeshua y Wilson está publicada en el sitio de presentación; el proyecto también se ejecuta localmente.
 
 | Integrante | Responsabilidad |
 |---|---|
