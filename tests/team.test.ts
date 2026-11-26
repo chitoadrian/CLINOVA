@@ -26,7 +26,7 @@ test('cuentas del grupo, roles y configuración que no restablece contraseñas',
  const session=await q('login',{username:'jeshua',password:'Cuenta de prueba segura jeshua'});
  const users=await q('users',{},session.token),adrian=users.find((u:any)=>u.username==='adrian');
  await q('user_save',{...adrian,password:'Nueva clave privada de prueba'},session.token);
- const db=await openDB('clinova-v1',3);
+ const db=await openDB('clinova-v1',4);
  await installTeamAccounts(db);
  const updated=await q('login',{username:'adrian',password:'Nueva clave privada de prueba'});
  assert.equal(updated.user.id,adrian.id);
@@ -41,6 +41,7 @@ test('la rotación de las cuatro cuentas conserva roles, pacientes y claves post
   db.createObjectStore('meta');
   db.createObjectStore('credentials',{keyPath:'user_id'});
   db.createObjectStore('users',{keyPath:'id'}).createIndex('username','username',{unique:true});
+  db.createObjectStore('roles',{keyPath:'id'});
   db.createObjectStore('patients',{keyPath:'id'});
  }});
  await db.put('meta',true,team.revision);
@@ -67,3 +68,4 @@ test('la rotación de las cuatro cuentas conserva roles, pacientes y claves post
  assert.deepEqual(await db.get('credentials',a.id),custom);
  db.close();
 });
+

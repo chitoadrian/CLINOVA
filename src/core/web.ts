@@ -1,10 +1,10 @@
 import{extraStores,initialize3,week3Request}from'./week3';
 import{installTeamAccounts}from'./team';
 import{openDB,type IDBPDatabase}from'idb';
-import{ROLES,stamp,canArea,fail,validatePatient,validateUser,validateRecord,type User,type Patient,type Credential,type UserInput,type RecordEntry,type Area}from'./model';
+import{ROLES,stamp,canArea,canReadPatient,fail,validateFinance,validatePatient,validateUser,validateRecord,type User,type Patient,type Credential,type UserInput,type RecordEntry,type Area,type FinanceEntry,type FinanceInput}from'./model';
 import{hashPassword,verifyPassword,dummyPassword}from'./password';
-const STORES=['roles','users','credentials','patients_v2','encounters','vital_signs','triage','medications','medication_orders','evaluations','rehabilitation_plans','legacy_records','meta',...extraStores];
-const opening=openDB('clinova-v1',3,{upgrade(db){
+const STORES=['roles','users','credentials','patients_v2','encounters','vital_signs','triage','medications','medication_orders','evaluations','rehabilitation_plans','legacy_records','financial_entries','meta',...extraStores];
+const opening=openDB('clinova-v1',4,{upgrade(db){
  for(const name of ['patients','records'])if(!db.objectStoreNames.contains(name))db.createObjectStore(name,{keyPath:'id'});
  if(!db.objectStoreNames.contains('meta'))db.createObjectStore('meta');
  for(const name of STORES)if(name!=='meta'&&!db.objectStoreNames.contains(name)){const s=db.createObjectStore(name,{keyPath:name==='credentials'?'user_id':'id'});if(name==='users')s.createIndex('username','username',{unique:true});if(name==='patients_v2')s.createIndex('legacy_id','legacy_id',{unique:true});if(['vital_signs','triage','evaluations','rehabilitation_plans'].includes(name))s.createIndex('encounter_id','encounter_id',{unique:true});if(name==='encounters')s.createIndex('patient_id','patient_id');}
@@ -20,7 +20,7 @@ const authError=()=>fail('Usuario o contraseña incorrectos, cuenta inactiva o b
 async function authorized(db:IDBPDatabase,token:string,touch=true){const s=sessions.get(token);const now=Date.now();if(!s||now-s.last>900_000||now-s.created>28_800_000){sessions.delete(token);fail('SESSION_EXPIRED');}const u=await db.get('users',s.user_id);if(!u||!u.active||u.deleted_at||u.version!==s.version){sessions.delete(token);fail('SESSION_EXPIRED');}if(touch)s.last=now;return publicUser(u);}
 export async function webRequest(op:string,p:any={},token=''):Promise<any>{
  const db=await ready;
- if(op==='status')return{initialized:!!await db.get('meta','initialized'),engine:'IndexedDB',schema:3};
+ if(op==='status')return{initialized:!!await db.get('meta','initialized'),engine:'IndexedDB',schema:4};
  if(op==='bootstrap'){const data:UserInput={...p,username:String(p.username).trim().toLowerCase(),active:true,role:'Administrador'};validateUser(data);const hash=await hashPassword(data.password??'');const tx=db.transaction(['meta','users','credentials'],'readwrite');if(await tx.objectStore('meta').get('initialized')){await tx.done;fail('El administrador inicial ya existe.');}const u={...stamp(),username:data.username,name:data.name.trim(),role_id:ROLES[0].id,active:true};await tx.objectStore('users').add(u);await tx.objectStore('credentials').add({...hash,user_id:u.id,failed_attempts:0,locked_until:0});await tx.objectStore('meta').put(true,'initialized');await tx.done;return{ok:true};}
  if(op==='login'){
   const username=String(p.username??'').trim().toLowerCase(),password=String(p.password??'');if(password.length>128)authError();
@@ -34,6 +34,48 @@ export async function webRequest(op:string,p:any={},token=''):Promise<any>{
  if(op==='logout'){sessions.delete(token);return{ok:true};}
  const actor=await authorized(db,token,!['me','data','clinical_data','users','sync_snapshot','sync_apply'].includes(op));
  if(op==='me'||op==='touch')return actor;
+ if(op==='finance_list'){
+  if(actor.role!=='Contable')fail('Solo Contabilidad puede consultar movimientos.');
+  return (await db.getAll('financial_entries') as FinanceEntry[]).filter(x=>!x.deleted_at).sort((a,b)=>b.occurred_at.localeCompare(a.occurred_at)||b.created_at.localeCompare(a.created_at));
+ }
+ if(op==='finance_save'){
+  if(actor.role!=='Contable')fail('Solo Contabilidad puede registrar movimientos.');
+  const input=p as FinanceInput;validateFinance(input);
+  const tx=db.transaction(['financial_entries','patients_v2'],'readwrite');
+  try{
+   const old=input.id?await tx.objectStore('financial_entries').get(input.id):null;
+   if(input.id&&(!old||old.deleted_at||old.version!==input.version))fail('Movimiento modificado o inexistente. Recarga.');
+   if(old&&(old.kind!==input.kind||old.patient_id!==input.patient_id))fail('Conserva el tipo y paciente originales.');
+   if(input.kind!=='gasto'){
+    const patient=await tx.objectStore('patients_v2').get(input.patient_id!);
+    if(!patient||patient.deleted_at)fail('Selecciona un paciente activo.');
+   }
+   const all=await tx.objectStore('financial_entries').getAll() as FinanceEntry[];
+   const related=all.filter(x=>!x.deleted_at&&x.id!==input.id&&x.patient_id===input.patient_id);
+   const cargos=related.filter(x=>x.kind==='cargo').reduce((n,x)=>n+x.amount_cents,0)+(input.kind==='cargo'?input.amount_cents:0);
+   const cobros=related.filter(x=>x.kind==='cobro').reduce((n,x)=>n+x.amount_cents,0)+(input.kind==='cobro'?input.amount_cents:0);
+   if(input.kind!=='gasto'&&cobros>cargos)fail('El cobro no puede superar el saldo pendiente del paciente.');
+   const values={kind:input.kind,patient_id:input.patient_id,concept:input.concept.trim(),amount_cents:input.amount_cents,method:input.method,occurred_at:input.occurred_at,reference:input.reference.trim(),author_id:old?.author_id??actor.id,author_name:old?.author_name??actor.name};
+   const row=old?updated(old,values):{...stamp(),...values};
+   await tx.objectStore('financial_entries').put(row);await tx.done;return row;
+  }catch(e){try{tx.abort();}catch{}await tx.done.catch(()=>{});throw e;}
+ }
+ if(op==='finance_delete'){
+  if(actor.role!=='Contable')fail('Solo Contabilidad puede dar de baja movimientos.');
+  const tx=db.transaction('financial_entries','readwrite');
+  try{
+   const old=await tx.store.get(p.id) as FinanceEntry|undefined;
+   if(!old||old.deleted_at||old.version!==p.version)fail('Movimiento modificado o inexistente. Recarga.');
+   if(old.kind==='cargo'){
+    const all=await tx.store.getAll() as FinanceEntry[];
+    const related=all.filter(x=>!x.deleted_at&&x.id!==old.id&&x.patient_id===old.patient_id);
+    const cargos=related.filter(x=>x.kind==='cargo').reduce((n,x)=>n+x.amount_cents,0);
+    const cobros=related.filter(x=>x.kind==='cobro').reduce((n,x)=>n+x.amount_cents,0);
+    if(cobros>cargos)fail('Primero ajusta los cobros asociados; la baja dejaría un saldo negativo.');
+   }
+   await tx.store.put(updated(old,{deleted_at:new Date().toISOString()}));await tx.done;return{ok:true};
+  }catch(e){try{tx.abort();}catch{}await tx.done.catch(()=>{});throw e;}
+ }
  if(['patient_save','patient_delete','record_save','record_delete','item_save','item_delete','clinical_data','sync_snapshot','sync_apply','sync_resolve'].includes(op))return week3Request(db,op,p,actor);
  if(op==='users'){admin(actor);return(await db.getAll('users')).filter(u=>!u.deleted_at).map(publicUser);}
  if(op==='user_save'){
@@ -59,7 +101,7 @@ export async function webRequest(op:string,p:any={},token=''):Promise<any>{
   await tx.done;return{id:e.id,patientId:patient.id,kind,createdAt:e.created_at,author:actor.name,values:v};
  }
  if(op==='data'){
-  const tx=db.transaction(['patients_v2','encounters','vital_signs','triage','evaluations','rehabilitation_plans','legacy_records']);const patients:Patient[]=(await tx.objectStore('patients_v2').getAll()).filter(p=>!p.deleted_at&&canArea(actor.role,p.area));const ids=new Set(patients.map(p=>p.id)),records:RecordEntry[]=[];
+  const tx=db.transaction(['patients_v2','encounters','vital_signs','triage','evaluations','rehabilitation_plans','legacy_records']);const patients:Patient[]=(await tx.objectStore('patients_v2').getAll()).filter(p=>!p.deleted_at&&canReadPatient(actor.role,p.area));const ids=new Set(patients.map(p=>p.id)),records:RecordEntry[]=[];
   for(const e of await tx.objectStore('encounters').getAll())if(!e.deleted_at&&ids.has(e.patient_id)&&canArea(actor.role,e.kind)){let values:Record<string,string>;
    if(e.kind==='Enfermería'){const v=await tx.objectStore('vital_signs').index('encounter_id').get(e.id),t=await tx.objectStore('triage').index('encounter_id').get(e.id);values={temperatura:String(v.temperature),pulso:String(v.pulse),sistolica:String(v.systolic),diastolica:String(v.diastolic),saturacion:String(v.spo2),triage:t.priority,observaciones:t.notes};}
    else{const v=await tx.objectStore('evaluations').index('encounter_id').get(e.id),r=await tx.objectStore('rehabilitation_plans').index('encounter_id').get(e.id);values={region:v.region,lado:v.side,movimiento:v.movement,grados:String(v.degrees),daniels:String(v.daniels),dolor:String(v.pain),plan:r.objective};}records.push({...e,patientId:e.patient_id,kind:e.kind,createdAt:e.created_at,author:e.author_name,values});}

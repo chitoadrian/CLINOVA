@@ -1,49 +1,63 @@
-# CLINOVA · Semana 4
+# CLINOVA
 
-Calidad, documentación y preparación de compilaciones · versión 0.4.0.
+Sistema académico de gestión para la Clínica Sanpichito. Unidad Educativa Montepiedra, Diseño y Desarrollo Web, 3.º de Bachillerato, Grupo 3. La aplicación ofrece una Web publicada y una base Tauri para Windows y Linux.
 
-Unidad Educativa Montepiedra · Diseño y Desarrollo Web · 3.º de Bachillerato · Grupo 3.
+**Web:** https://orange-seal-508462.hostingersite.com/  
+**Repositorio:** https://github.com/chitoadrian/CLINOVA
 
-Continúa el código integrado de Semana 3. Conserva autenticación, pacientes, módulos y sincronización. Las entregas anteriores no se sobrescribieron. La versión Web con espacios diferenciados de Jeshua y Wilson está publicada en el sitio de presentación; el proyecto también se ejecuta localmente.
+## Equipo y perfiles del sistema
 
-| Integrante | Responsabilidad |
-|---|---|
-| Jeshua Sánchez Alcívar | Coordinación, integración y compilaciones |
-| Wilson Pinela | Base de datos, autenticación y sincronización |
-| Adrian Chito Vargas | Enfermería |
-| Matias Muñiz | Fisioterapia |
+| Integrante | Responsabilidad del proyecto | Vista y funciones en la aplicación |
+|---|---|---|
+| Jeshua Sánchez Alcívar | Coordinación, integración y DevOps | Administrador: coordinación, directorio de pacientes, cuentas y estado de sincronización. |
+| Wilson Pinela | Base de datos, migraciones y autenticación; ahora Contabilidad | Contable: consulta de pacientes de ambas áreas, cargos, cobros, pagos, saldos y movimientos. No ve fichas clínicas ni usuarios. |
+| Adrian Chito Vargas | Frontend de Enfermería | Enfermero: sus pacientes, signos, triage, Kardex, camas, hospitalización y PDF del área. |
+| Matias Muñiz | Frontend de Fisioterapia | Fisioterapeuta: sus pacientes, evaluación, goniometría, Daniels, planes, rutinas, evolución y PDF del área o rutina. |
 
-## Ejecutar la Web
+Las contraseñas actuales se entregan por un canal privado. No están en texto plano en el repositorio. El login local usa PBKDF2 con sal individual, 600 000 iteraciones, bloqueo tras cinco intentos y sesión temporal. Las opciones visibles y las operaciones locales comprueban el rol.
 
-Node.js 22.12 o posterior y npm. Dentro de proyecto:
+## Arquitectura real
+
+```
+React + TypeScript
+  ├─ Web: IndexedDB + Service Worker (después de la primera carga)
+  ├─ Windows/Linux: Tauri + SQLite (migraciones versionadas)
+  └─ Sync Engine clínico: Supabase Auth → Edge Function clinova-api
+                              → PostgreSQL, esquema clinova
+```
+
+La aplicación guarda primero en el dispositivo. El motor clínico envía una cola de cambios al reconectar, usa UUID y `op_id` para evitar duplicados y conserva versiones y conflictos. El proyecto Supabase real es **CLINOVA**, ID `gcsodpalqwwpsiodeeil`, región `sa-east-1`; su esquema `clinova` contiene `roles`, `members`, `invitations`, `records`, `revisions` y `receipts`, con RLS. La API está en `/functions/v1/clinova-api`. La clave del cliente es publicable; la clave de servicio permanece en el servidor.
+
+**Límite actual:** los movimientos de Contabilidad se almacenan en IndexedDB/SQLite y aún no se envían a Supabase. Wilson ve los pacientes locales de ambas áreas en su dispositivo; la recepción de pacientes desde otro equipo requiere una conexión clínica existente y no está habilitada para el nuevo rol Contable. La Web offline funciona tras cargarse por primera vez con conexión, usando el mismo navegador y origen. Los PDFs de área y rutina se generan desde datos locales y deben revisarse antes de compartir.
+
+El perfil cloud existente de Wilson se cambió de Administrador a Contable en el proyecto CLINOVA. La migración está en `supabase/migrations/20261126_contable.sql`; no se modificaron otros proyectos Supabase.
+
+## Funciones por área
+
+- **Enfermería:** alta y consulta de pacientes propios, signos vitales, triage manual, Kardex, estado de cama, ingreso y alta hospitalaria; edición, baja lógica y exportación PDF de informe de paciente.
+- **Fisioterapia:** pacientes propios, evaluación biomecánica, goniometría, escala Daniels, plan y rutina, evolución; edición, baja lógica, informe PDF del paciente y rutina PDF individual.
+- **Contabilidad:** cargos a pacientes de ambas áreas, cobros, pagos de la clínica, saldos, filtros, corrección y baja lógica. Es un registro interno académico; no emite facturas tributarias.
+- **Coordinación:** directorio general, alta y mantenimiento de usuarios, revisión del estado de sincronización y acceso a pacientes de ambas áreas. La navegación clínica directa no se ofrece al coordinador.
+
+## Ejecutar
+
+Requiere Node.js 22.12+ y npm. En la carpeta del proyecto:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Abrir http://127.0.0.1:1420/. En PowerShell se puede usar npm.cmd.
+Abrir http://127.0.0.1:1420/. Para generar Web:
 
 ```sh
 npm run build
 npm run preview -- --port 4174
 ```
 
-Abrir http://127.0.0.1:4174/. La caché offline se instala en producción tras una primera carga con conexión. No abrir el index.html de la aplicación con doble clic. Para conservar datos locales, mantener el mismo origen, navegador y perfil.
+Para escritorio se requiere Rust y las herramientas nativas de Tauri. El código está en `src-tauri`; `npm run desktop:build` genera paquetes según el sistema operativo y la configuración del entorno. Los instaladores publicados anteriormente pueden no incluir esta revisión reciente de Contabilidad y exportación PDF.
 
-Sitio de presentación existente: https://orange-seal-508462.hostingersite.com/.
-
-## Cuentas y funcionamiento
-
-jeshua y wilson son administradores; adrian, enfermero; matias, fisioterapeuta. Las contraseñas vigentes se entregan por un canal privado. El código contiene hashes PBKDF2 con sal individual, no contraseñas del grupo en texto plano. No ejecutar manualmente migraciones históricas sobre una base ya migrada.
-
-La navegación del equipo se personaliza: jeshua abre Coordinación, Enfermería, Fisioterapia, Pacientes y Sincronización; wilson abre Datos y acceso, Pacientes, Usuarios y Sincronización. Adrian y Matias conservan sus áreas clínicas. Jeshua y Wilson siguen teniendo el rol base Administrador en los servicios de datos; esta separación ordena sus pantallas de trabajo y no constituye una nueva frontera de autorización del backend.
-
-Enfermería: fichas, signos, triage manual, kardex, camas, ingreso y alta. Fisioterapia: evaluación, goniometría, Daniels, planes, rutinas y evolución. Los registros admiten edición y baja lógica, con validación de rangos y relaciones. El administrador gestiona cuentas locales.
-
-Web utiliza IndexedDB; las fuentes Tauri/Rust utilizan SQLite. El cambio y su pendiente se confirman en una transacción. Supabase Auth y la API verifican identidad y rol. UUID, op_id, revisiones y cursor gestionan intercambio y conflictos. Los datos se comparten según el área; los usuarios locales no se convierten automáticamente en cuentas cloud.
-
-## Pruebas de Semana 4
+## Comprobaciones y documentos
 
 ```sh
 npm test
@@ -51,39 +65,4 @@ python tests/test_sqlite.py
 npm run build
 ```
 
-- 12 pruebas/subpruebas Node aprobadas: incluye 500 altas en ráfagas de 20, concurrencia, fallo de cuota, rollback, lotes y ACK repetidos.
-- SQLite: seis migraciones idempotentes, cuatro cuentas, FK/UNIQUE/CHECK y restricciones de ocupación.
-- Edge aislado: cuatro roles, 250 fichas offline en IndexedDB real, reingreso, HTTP 503, recuperación y recepción en otro contexto. La API se intercepta: no se genera carga en Supabase real.
-- Se corrigió la prueba SQL antigua que esperaba tres migraciones; ahora verifica seis y las cuatro cuentas.
-
-Procedimiento del navegador: [tests/README_QA.md](tests/README_QA.md). Las evidencias detalladas están en el ZIP de entrega. La revisión por otro grupo está pendiente; no equivale a las pruebas automáticas.
-
-## Manuales y diagramas
-
-- [Secuencias para imprimir](docs/semana4/01_Secuencias_CLINOVA.pdf)
-- [Manual de usuario PDF](docs/semana4/02_Manual_Usuario_Borrador.pdf)
-- [Manual técnico PDF](docs/semana4/03_Manual_Tecnico_Borrador.pdf)
-- [Informe QA y ficha cruzada](docs/semana4/04_Pruebas_QA_y_Revision_Cruzada.pdf)
-- [Manuales Web](public/manuales/index.html): abrir ese archivo directamente o visitar /manuales/ en el servidor.
-
-Son borradores de Semana 4. Imprimir las tres páginas de secuencias; se recomienda A3 horizontal.
-
-## Windows y Linux
-
-Los instaladores de Windows (MSI y EXE) y Linux (DEB y AppImage) se generaron en [GitHub Actions](https://github.com/chitoadrian/CLINOVA/actions/runs/44534787525) y se incorporaron al ZIP de Semana 4. Ambos trabajos y el de Web terminaron correctamente. Se verificaron formato, tamaño y SHA-256; la instalación y apertura en equipos de destino quedan para la revisión cruzada.
-
-[Requisitos oficiales Tauri](https://v2.tauri.app/start/prerequisites/).
-
-Windows: Rust MSVC, Microsoft C++ Build Tools, Windows SDK y WebView2; ejecutar scripts/build-windows.ps1.
-
-Linux: Rust, Node y dependencias WebKitGTK del manual técnico; ejecutar bash scripts/build-linux.sh.
-
-.github/workflows/escritorio.yml ejecuta los trabajos nativos de Windows y Linux en cada envío a main. Los paquetes incluidos en la entrega proceden del commit ab2c06d4c7f3bc5f04c38f8e094190596142a103.
-
-## Seguridad y límites
-
-La base local no está cifrada en reposo. Controlar el dispositivo permite manipularla. La revocación local y cloud es independiente. No existe exportación de respaldo desde la interfaz. Usar datos ficticios y excluir credenciales privadas del repositorio.
-
-No se modificaron otros proyectos ni se enviaron datos de carga al servidor real. Las pruebas no certifican todos los dispositivos ni capacidad de PostgreSQL.
-
-Código bajo [MIT](LICENSE). El logo es material aportado por el usuario.
+Las pruebas locales cubren migraciones, roles, CRUD, cola y conflictos simulados. No sustituyen una demostración con dos equipos conectados al Supabase real. La documentación revisada de Semanas 1–4 y el guion de las cuatro cuentas se encuentran en `docs/revision`. Los diagramas y entregas históricos se conservan.

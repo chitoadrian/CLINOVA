@@ -1,5 +1,5 @@
 import {useEffect,useState,type FormEvent} from 'react';
-import {ArrowRight,Eye,EyeOff,LockKeyhole,ShieldCheck,HeartPulse,Activity,Cloud,UserRound} from 'lucide-react';
+import {ArrowRight,Eye,EyeOff,LockKeyhole,ShieldCheck,HeartPulse,Activity,Cloud,UserRound,Wallet} from 'lucide-react';
 import {status,bootstrap,login,type User} from '../db';
 import './AccessScreen.css';
 import ThemeToggle from './ThemeToggle';
@@ -28,8 +28,8 @@ export default function AccessScreen({onLogin}:{onLogin:(u:User,password:string)
     <span className="auth-eyebrow"><span/> ATENCIÓN INTEGRAL</span>
     <h1>Un equipo conectado.<br/><em>Una atención más cercana.</em></h1>
     <p>La información que tu equipo necesita, organizada en un solo espacio de trabajo.</p>
-    <div className="auth-services"><div><HeartPulse size={22}/><span><strong>Enfermería</strong><small>Registro y seguimiento clínico</small></span></div><div><Activity size={22}/><span><strong>Fisioterapia</strong><small>Evaluación y rehabilitación</small></span></div></div>
-    <div className="auth-connection"><Cloud size={18}/><span>Continúa sin conexión. Tus cambios se sincronizan al volver.</span></div>
+    <div className="auth-services"><div><HeartPulse size={22}/><span><strong>Enfermería</strong><small>Registro y seguimiento clínico</small></span></div><div><Activity size={22}/><span><strong>Fisioterapia</strong><small>Evaluación y rehabilitación</small></span></div><div><Wallet size={22}/><span><strong>Contabilidad</strong><small>Cargos, cobros y pagos internos</small></span></div></div>
+    <div className="auth-connection"><Cloud size={18}/><span>Trabaja sin conexión. Los registros clínicos se sincronizan al volver.</span></div>
    </section>
    <section className="auth-card" aria-labelledby="access-title">
     <div className="auth-card-top"><span className="auth-lock"><LockKeyhole size={22}/></span><span>ACCESO DEL PERSONAL</span></div>

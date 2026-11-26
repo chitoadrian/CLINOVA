@@ -6,7 +6,9 @@ db.execute('CREATE TABLE schema_migrations(version INTEGER PRIMARY KEY, applied_
 def migrate():
     for version,script in enumerate(sorted((root/'src-tauri/migrations').glob('*.sql')),1):
         if not db.execute('SELECT 1 FROM schema_migrations WHERE version=?',(version,)).fetchone():
+            if version==7: db.execute('PRAGMA foreign_keys=OFF')
             db.executescript('BEGIN IMMEDIATE;\n'+script.read_text(encoding='utf-8')+f"\nINSERT INTO schema_migrations VALUES({version},'2026-11-06T00:00:00Z');\nCOMMIT;")
+            if version==7: db.execute('PRAGMA foreign_keys=ON')
 migrations=sorted((root/'src-tauri/migrations').glob('*.sql'))
 migrate();migrate();assert db.execute('SELECT count(*) FROM schema_migrations').fetchone()[0]==len(migrations)
 assert db.execute('SELECT count(*) FROM users').fetchone()[0]==4

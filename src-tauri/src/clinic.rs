@@ -1,5 +1,6 @@
 //! API local cerrada: no se expone ejecución SQL al WebView.
 mod week3;
+mod finance;
 use rusqlite::{Connection, params_from_iter, types::{Value as Sql,ValueRef}};
 use serde_json::{Value as J, json};
 use std::{collections::HashMap,path::Path};
@@ -8,6 +9,7 @@ type R<T> = Result<T,String>;
 const ADMIN:&str="00000000-0000-4000-8000-000000000001";
 const NURSE:&str="00000000-0000-4000-8000-000000000002";
 const PHYSIO:&str="00000000-0000-4000-8000-000000000003";
+const ACCOUNTANT:&str="00000000-0000-4000-8000-000000000004";
 const AUTH:&str="Usuario o contraseña incorrectos, cuenta inactiva o bloqueo temporal.";
 fn err(e:rusqlite::Error)->String{format!("Base local: {e}")}
 fn now()->String{chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis,true)}
@@ -22,9 +24,10 @@ fn exec(c:&Connection,q:&str,p:&[J])->R<usize>{c.execute(q,params_from_iter(p.it
 fn insert(c:&Connection,table:&str,v:&J)->R<()>{let obj=v.as_object().ok_or("Datos inválidos")?;let keys:Vec<&String>=obj.keys().collect();let q=format!("INSERT INTO {table} ({}) VALUES ({})",keys.iter().map(|s|s.as_str()).collect::<Vec<_>>().join(","),vec!["?";keys.len()].join(","));exec(c,&q,&keys.iter().map(|k|obj[*k].clone()).collect::<Vec<_>>())?;Ok(())}
 fn stamp()->J{let t=now();json!({"id":id(),"created_at":t,"updated_at":t,"deleted_at":null,"version":1})}
 fn with(mut a:J,b:J)->J{a.as_object_mut().unwrap().extend(b.as_object().unwrap().clone());a}
-fn public(mut u:J)->J{u["active"]=json!(u["active"].as_i64()==Some(1));u["role"]=json!(match s(&u,"role_id"){ADMIN=>"Administrador",NURSE=>"Enfermero",_=>"Fisioterapeuta"});u}
-fn role_id(role:&str)->R<&'static str>{match role{"Administrador"=>Ok(ADMIN),"Enfermero"=>Ok(NURSE),"Fisioterapeuta"=>Ok(PHYSIO),_=>Err("Rol inválido".into())}}
+fn public(mut u:J)->J{u["active"]=json!(u["active"].as_i64()==Some(1));u["role"]=json!(match s(&u,"role_id"){ADMIN=>"Administrador",NURSE=>"Enfermero",PHYSIO=>"Fisioterapeuta",ACCOUNTANT=>"Contable",_=>"Desconocido"});u}
+fn role_id(role:&str)->R<&'static str>{match role{"Administrador"=>Ok(ADMIN),"Enfermero"=>Ok(NURSE),"Fisioterapeuta"=>Ok(PHYSIO),"Contable"=>Ok(ACCOUNTANT),_=>Err("Rol inválido".into())}}
 fn can_area(u:&J,area:&str)->bool{s(u,"role_id")==ADMIN||(s(u,"role_id")==NURSE&&area=="Enfermería")||(s(u,"role_id")==PHYSIO&&area=="Fisioterapia")}
+fn can_read_patient(u:&J,area:&str)->bool{s(u,"role_id")==ACCOUNTANT||can_area(u,area)}
 fn require_admin(u:&J)->R<()>{if s(u,"role_id")!=ADMIN{Err("No tienes permiso para esta operación.".into())}else{Ok(())}}
 fn password(p:&str)->R<J>{if p.chars().count()<10||p.chars().count()>128||p.trim().is_empty(){return Err("La contraseña debe tener entre 10 y 128 caracteres.".into());}let salt=uuid::Uuid::new_v4().into_bytes();let mut hash=[0u8;32];pbkdf2::pbkdf2_hmac::<sha2::Sha256>(p.as_bytes(),&salt,600000,&mut hash);Ok(json!({"password_hash":hex::encode(hash),"salt":hex::encode(salt),"iterations":600000,"failed_attempts":0,"locked_until":0}))}
 fn verify(p:&str,c:&J)->R<bool>{let salt=hex::decode(s(c,"salt")).map_err(|_|"Credencial inválida")?;let expected=hex::decode(s(c,"password_hash")).map_err(|_|"Credencial inválida")?;let mut actual=[0u8;32];pbkdf2::pbkdf2_hmac::<sha2::Sha256>(p.as_bytes(),&salt,n(c,"iterations")as u32,&mut actual);Ok(bool::from(actual.as_slice().ct_eq(&expected)))}
@@ -35,12 +38,12 @@ struct Session{user_id:String,last:i64,created:i64,version:i64}
 pub struct Clinic{db:Connection,sessions:HashMap<String,Session>}
 impl Clinic{
  pub fn open(path:&Path)->R<Self>{let db=Connection::open(path).map_err(err)?;db.execute_batch("PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000; CREATE TABLE IF NOT EXISTS schema_migrations(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);").map_err(err)?;
-  for(version,script)in [(1,include_str!("../migrations/001_core.sql")),(2,include_str!("../migrations/002_constraints.sql")),(3,include_str!("../migrations/003_clinical_sync.sql")),(4,include_str!("../migrations/004_team_accounts.sql")),(5,include_str!("../migrations/005_matias_password.sql")),(6,include_str!("../migrations/006_team_passwords.sql"))]{if one(&db,"SELECT version FROM schema_migrations WHERE version=?",&[json!(version)])?.is_null(){let tx=db.unchecked_transaction().map_err(err)?;tx.execute_batch(script).map_err(err)?;exec(&tx,"INSERT INTO schema_migrations VALUES(?,?)",&[json!(version),json!(now())])?;tx.commit().map_err(err)?;}}
+  for(version,script)in [(1,include_str!("../migrations/001_core.sql")),(2,include_str!("../migrations/002_constraints.sql")),(3,include_str!("../migrations/003_clinical_sync.sql")),(4,include_str!("../migrations/004_team_accounts.sql")),(5,include_str!("../migrations/005_matias_password.sql")),(6,include_str!("../migrations/006_team_passwords.sql")),(7,include_str!("../migrations/007_contabilidad.sql"))]{if one(&db,"SELECT version FROM schema_migrations WHERE version=?",&[json!(version)])?.is_null(){if version==7{db.execute_batch("PRAGMA foreign_keys=OFF").map_err(err)?;}let tx=db.unchecked_transaction().map_err(err)?;tx.execute_batch(script).map_err(err)?;exec(&tx,"INSERT INTO schema_migrations VALUES(?,?)",&[json!(version),json!(now())])?;tx.commit().map_err(err)?;if version==7{db.execute_batch("PRAGMA foreign_keys=ON").map_err(err)?;if !rows(&db,"PRAGMA foreign_key_check",&[])?.is_empty(){return Err("Migración contable: relaciones inválidas".into());}}}}
   let clinic=Self{db,sessions:HashMap::new()};clinic.seed_sync()?;Ok(clinic)
  }
  fn user(&mut self,token:&str,touch:bool)->R<J>{let t=ms();let session=self.sessions.get_mut(token).ok_or("SESSION_EXPIRED")?;if t-session.last>900000||t-session.created>28800000{return Err("SESSION_EXPIRED".into());}let u=one(&self.db,"SELECT * FROM users WHERE id=? AND active=1 AND deleted_at IS NULL",&[json!(session.user_id)])?;if u.is_null()||n(&u,"version")!=session.version{return Err("SESSION_EXPIRED".into());}if touch{session.last=t;}Ok(u)}
  pub fn request(&mut self,op:&str,mut p:J,token:&str)->R<J>{
-  if op=="status"{return Ok(json!({"initialized":!one(&self.db,"SELECT value FROM meta WHERE key='initialized'",&[])?.is_null(),"engine":"SQLite","schema":4}));}
+  if op=="status"{return Ok(json!({"initialized":!one(&self.db,"SELECT value FROM meta WHERE key='initialized'",&[])?.is_null(),"engine":"SQLite","schema":7}));}
   if op=="bootstrap"{p["username"]=json!(s(&p,"username").trim().to_lowercase());p["role"]=json!("Administrador");p["active"]=json!(true);check_user(&p)?;let hash=password(s(&p,"password"))?;let tx=self.db.unchecked_transaction().map_err(err)?;if !one(&tx,"SELECT value FROM meta WHERE key='initialized'",&[])?.is_null(){return Err("El administrador inicial ya existe.".into());}let u=with(stamp(),json!({"username":p["username"],"name":s(&p,"name").trim(),"role_id":ADMIN,"active":1}));insert(&tx,"users",&u)?;insert(&tx,"credentials",&with(hash,json!({"user_id":u["id"]})))?;exec(&tx,"INSERT INTO meta VALUES('initialized','1')",&[])?;tx.commit().map_err(err)?;return Ok(json!({"ok":true}));}
   if op=="login"{let username=s(&p,"username").trim().to_lowercase();let pw=s(&p,"password");if pw.chars().count()>128{return Err(AUTH.into());}let u=one(&self.db,"SELECT * FROM users WHERE username=?",&[json!(username)])?;let c=one(&self.db,"SELECT * FROM credentials WHERE user_id=?",&[u["id"].clone()])?;if u.is_null()||c.is_null()||n(&u,"active")!=1||!u["deleted_at"].is_null()||n(&c,"locked_until")>ms(){let mut out=[0u8;32];pbkdf2::pbkdf2_hmac::<sha2::Sha256>(pw.as_bytes(),&[0u8;16],600000,&mut out);return Err(AUTH.into());}
    if !verify(pw,&c)?{let count=if n(&c,"locked_until")>0{1}else{n(&c,"failed_attempts")+1};exec(&self.db,"UPDATE credentials SET failed_attempts=?,locked_until=? WHERE user_id=?",&[json!(count),json!(if count>=5{ms()+300000}else{0}),u["id"].clone()])?;return Err(AUTH.into());}
@@ -50,13 +53,14 @@ impl Clinic{
   let actor=self.user(token,!["me","data","clinical_data","users","sync_snapshot","sync_apply"].contains(&op))?;
   if op=="me"||op=="touch"{return Ok(public(actor));}
   if op=="users"{require_admin(&actor)?;return Ok(json!(rows(&self.db,"SELECT * FROM users WHERE deleted_at IS NULL ORDER BY name",&[])?.into_iter().map(public).collect::<Vec<_>>()));}
+  if op=="finance_list"{return self.finance_list(&actor);}
   if op=="data"{return self.data(&actor);}
   // Una única conexión bloqueada y una transacción por operación de escritura.
   self.db.execute_batch("BEGIN IMMEDIATE").map_err(err)?;
   let result=self.mutate(op,&p,&actor);
   match result{Ok(value)=>{self.db.execute_batch("COMMIT").map_err(err)?;if op=="user_delete"||(op=="user_save"&&!s(&p,"id").is_empty()){let changed=s(&p,"id");self.sessions.retain(|_,session|session.user_id!=changed);}Ok(value)},Err(e)=>{let _=self.db.execute_batch("ROLLBACK");Err(e)}}
  }
- fn mutate(&self,op:&str,p:&J,actor:&J)->R<J>{if ["patient_save","patient_delete","record_save","record_delete","item_save","item_delete","clinical_data","sync_snapshot","sync_apply","sync_resolve"].contains(&op){return self.week3(op,p,actor);}let c=&self.db;
+ fn mutate(&self,op:&str,p:&J,actor:&J)->R<J>{if ["patient_save","patient_delete","record_save","record_delete","item_save","item_delete","clinical_data","sync_snapshot","sync_apply","sync_resolve"].contains(&op){return self.week3(op,p,actor);}if op=="finance_save"||op=="finance_delete"{return self.finance_mutate(op,p,actor);}let c=&self.db;
   match op{
    "patient_save"=>{require_admin(actor)?;check_patient(p)?;let fields=json!({"name":s(p,"name").trim(),"age":p["age"],"area":p["area"],"reason":s(p,"reason").trim(),"status":p["status"]});if s(p,"id").is_empty(){let row=with(stamp(),fields);insert(c,"patients",&row)?;Ok(row)}else{let old=current(c,"patients",p)?;exec(c,"UPDATE patients SET name=?,age=?,area=?,reason=?,status=?,updated_at=?,version=version+1 WHERE id=?",&[fields["name"].clone(),fields["age"].clone(),fields["area"].clone(),fields["reason"].clone(),fields["status"].clone(),json!(now()),old["id"].clone()])?;one(c,"SELECT * FROM patients WHERE id=?",&[old["id"].clone()])}},
    "patient_delete"=>{require_admin(actor)?;let old=current(c,"patients",p)?;exec(c,"UPDATE patients SET deleted_at=?,updated_at=?,version=version+1 WHERE id=?",&[json!(now()),json!(now()),old["id"].clone()])?;Ok(json!({"ok":true}))},
@@ -78,7 +82,7 @@ impl Clinic{
   else if kind=="Fisioterapia"{let ev=with(stamp(),json!({"encounter_id":e["id"],"region":v["region"],"side":v["lado"],"movement":v["movimiento"],"degrees":num("grados",false)?,"daniels":num("daniels",true)?,"pain":num("dolor",true)?}));insert(c,"evaluations",&ev)?;insert(c,"rehabilitation_plans",&with(stamp(),json!({"encounter_id":e["id"],"evaluation_id":ev["id"],"objective":v["plan"]})))?;}else{return Err("Área inválida".into());}
   Ok(json!({"id":e["id"],"patientId":patient["id"],"kind":kind,"createdAt":e["created_at"],"author":actor["name"],"values":v}))
  }
- fn data(&self,actor:&J)->R<J>{let c=&self.db;let patients:Vec<J>=rows(c,"SELECT * FROM patients WHERE deleted_at IS NULL ORDER BY name",&[])?.into_iter().filter(|p|can_area(actor,s(p,"area"))).collect();let mut records=vec![];
+ fn data(&self,actor:&J)->R<J>{let c=&self.db;let patients:Vec<J>=rows(c,"SELECT * FROM patients WHERE deleted_at IS NULL ORDER BY name",&[])?.into_iter().filter(|p|can_read_patient(actor,s(p,"area"))).collect();let mut records=vec![];
   for e in rows(c,"SELECT * FROM encounters WHERE deleted_at IS NULL ORDER BY created_at",&[])?{if !patients.iter().any(|p|p["id"]==e["patient_id"])||!can_area(actor,s(&e,"kind")){continue;}let values=if s(&e,"kind")=="Enfermería"{let v=one(c,"SELECT v.*,t.priority,t.notes FROM vital_signs v JOIN triage t ON t.vital_id=v.id WHERE v.encounter_id=?",&[e["id"].clone()])?;json!({"temperatura":v["temperature"].to_string(),"pulso":v["pulse"].to_string(),"sistolica":v["systolic"].to_string(),"diastolica":v["diastolic"].to_string(),"saturacion":v["spo2"].to_string(),"triage":v["priority"],"observaciones":v["notes"]})}else{let v=one(c,"SELECT v.*,r.objective FROM evaluations v JOIN rehabilitation_plans r ON r.evaluation_id=v.id WHERE v.encounter_id=?",&[e["id"].clone()])?;json!({"region":v["region"],"lado":v["side"],"movimiento":v["movement"],"grados":v["degrees"].to_string(),"daniels":v["daniels"].to_string(),"dolor":v["pain"].to_string(),"plan":v["objective"]})};records.push(json!({"id":e["id"],"version":e["version"],"created_at":e["created_at"],"updated_at":e["updated_at"],"deleted_at":e["deleted_at"],"patientId":e["patient_id"],"kind":e["kind"],"createdAt":e["created_at"],"author":e["author_name"],"values":values}));}
   for legacy in rows(c,"SELECT * FROM legacy_records",&[])?{if patients.iter().any(|p|p["id"]==legacy["patient_id"]){let mut r:J=serde_json::from_str(s(&legacy,"document")).map_err(|_|"Registro legado inválido")?;if can_area(actor,s(&r,"kind")){r["id"]=legacy["id"].clone();r["patientId"]=legacy["patient_id"].clone();records.push(r);}}}Ok(json!({"patients":patients,"records":records}))
  }

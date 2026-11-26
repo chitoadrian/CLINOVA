@@ -1,4 +1,4 @@
-export type Role='Administrador'|'Enfermero'|'Fisioterapeuta';
+export type Role='Administrador'|'Enfermero'|'Fisioterapeuta'|'Contable';
 export type Area='Enfermería'|'Fisioterapia';
 export type Stamp={id:string;created_at:string;updated_at:string;deleted_at:string|null;version:number};
 export type User=Stamp&{username:string;name:string;role_id:string;role:Role;active:boolean};
@@ -7,9 +7,14 @@ export type Credential={user_id:string;password_hash:string;salt:string;iteratio
 export type RecordEntry=Partial<Stamp>&{id:string;patientId:string;kind:Area;createdAt:string;author:string;values:Record<string,string>};
 export type PatientInput=Pick<Patient,'name'|'age'|'area'|'reason'|'status'>&{id?:string;version?:number};
 export type UserInput={id?:string;version?:number;username:string;name:string;role:Role;active:boolean;password?:string};
-export const ROLES=[{id:'00000000-0000-4000-8000-000000000001',name:'Administrador' as Role},{id:'00000000-0000-4000-8000-000000000002',name:'Enfermero' as Role},{id:'00000000-0000-4000-8000-000000000003',name:'Fisioterapeuta' as Role}];
+export type FinanceKind='cargo'|'cobro'|'gasto';
+export type FinanceEntry=Stamp&{kind:FinanceKind;patient_id:string|null;concept:string;amount_cents:number;method:string;occurred_at:string;reference:string;author_id:string;author_name:string};
+export type FinanceInput=Pick<FinanceEntry,'kind'|'patient_id'|'concept'|'amount_cents'|'method'|'occurred_at'|'reference'>&{id?:string;version?:number};
+export const ROLES=[{id:'00000000-0000-4000-8000-000000000001',name:'Administrador' as Role},{id:'00000000-0000-4000-8000-000000000002',name:'Enfermero' as Role},{id:'00000000-0000-4000-8000-000000000003',name:'Fisioterapeuta' as Role},{id:'00000000-0000-4000-8000-000000000004',name:'Contable' as Role}];
 export function stamp():Stamp{const now=new Date().toISOString();return{id:crypto.randomUUID(),created_at:now,updated_at:now,deleted_at:null,version:1};}
 export function canArea(role:Role,area:Area){return role==='Administrador'||(role==='Enfermero'&&area==='Enfermería')||(role==='Fisioterapeuta'&&area==='Fisioterapia');}
+export function canReadPatient(role:Role,area:Area){return role==='Contable'||canArea(role,area);}
+export function validateFinance(v:FinanceInput){if(!['cargo','cobro','gasto'].includes(v.kind)||!v.concept?.trim()||v.concept.length>180||!Number.isSafeInteger(v.amount_cents)||v.amount_cents<1||v.amount_cents>100000000||!['Efectivo','Transferencia','Tarjeta','Otro'].includes(v.method)||!/^\d{4}-\d{2}-\d{2}$/.test(v.occurred_at)||Number.isNaN(Date.parse(v.occurred_at))||typeof v.reference!=='string'||v.reference.length>100||((v.kind==='gasto')!==(!v.patient_id)))fail('Revisa tipo, paciente, concepto, monto, forma de pago y fecha.');}
 export function fail(message:string):never{throw new Error(message);}
 export function validatePassword(p:string){if(typeof p!=='string'||p.length<10||p.length>128||!p.trim())fail('La contraseña debe tener entre 10 y 128 caracteres.');}
 export function validatePatient(p:PatientInput){if(!p.name?.trim()||p.name.trim().length<2||p.name.length>100||!Number.isInteger(p.age)||p.age<0||p.age>130||!['Enfermería','Fisioterapia'].includes(p.area)||!['En espera','En atención','Alta'].includes(p.status)||!p.reason?.trim()||p.reason.length>300)fail('Revisa nombre, edad (0-130), área, estado y motivo.');}

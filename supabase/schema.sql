@@ -3,8 +3,8 @@
 CREATE SCHEMA IF NOT EXISTS clinova;
 REVOKE ALL ON SCHEMA clinova FROM public, anon, authenticated;
 GRANT USAGE ON SCHEMA clinova TO service_role;
-CREATE TABLE clinova.roles(name text PRIMARY KEY CHECK(name IN ('Administrador','Enfermero','Fisioterapeuta')));
-INSERT INTO clinova.roles VALUES ('Administrador'),('Enfermero'),('Fisioterapeuta');
+CREATE TABLE clinova.roles(name text PRIMARY KEY CHECK(name IN ('Administrador','Enfermero','Fisioterapeuta','Contable')));
+INSERT INTO clinova.roles VALUES ('Administrador'),('Enfermero'),('Fisioterapeuta'),('Contable');
 CREATE TABLE clinova.members(
  user_id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
  local_user_id uuid NOT NULL UNIQUE,

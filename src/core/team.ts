@@ -5,7 +5,7 @@ import {stamp} from './model';
 // Configuración académica solicitada para esta entrega. No reestablece claves al recargar.
 export async function installTeamAccounts(db:IDBPDatabase){
  if(!team.enabled)return;
- const tx=db.transaction(['meta','users','credentials'],'readwrite');
+ const tx=db.transaction(['meta','users','credentials','roles'],'readwrite');
  const installed=await tx.objectStore('meta').get(team.revision);
  if(!installed)for(const account of team.accounts){
   const old=await tx.objectStore('users').index('username').get(account.username);
@@ -27,6 +27,14 @@ export async function installTeamAccounts(db:IDBPDatabase){
    await tx.objectStore('users').put({...user,updated_at:new Date().toISOString(),version:user.version+1});
   }
   await tx.objectStore('meta').put({applied_at:new Date().toISOString()},revision);
+ }
+ // Nuevo departamento: conserva la contraseña vigente de Wilson y solo actualiza su rol.
+ if(!await tx.objectStore('meta').get('wilson-contable-2026-11-26')){
+  const account=team.accounts.find(a=>a.username==='wilson');
+  const user=await tx.objectStore('users').index('username').get('wilson');
+  await tx.objectStore('roles').put({id:'00000000-0000-4000-8000-000000000004',name:'Contable'});
+  if(account&&user&&user.role_id!==account.role_id)await tx.objectStore('users').put({...user,role_id:account.role_id,updated_at:new Date().toISOString(),version:user.version+1});
+  await tx.objectStore('meta').put({applied_at:new Date().toISOString()},'wilson-contable-2026-11-26');
  }
  await tx.done;
 }

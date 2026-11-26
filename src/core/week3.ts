@@ -47,6 +47,7 @@ export async function week3Request(db:IDBPDatabase,op:string,p:any,actor:User):P
  if(op==='clinical_data'){const patients=await tx.objectStore('patients_v2').getAll();result=(await tx.objectStore('clinical_items').getAll()).filter((i:ClinicalItem)=>!i.deleted_at&&canArea(actor.role,i.area)&&(!i.patient_id||patients.some(x=>x.id===i.patient_id&&!x.deleted_at)));}
  else if(['patient_save','patient_delete','record_save','record_delete','item_save','item_delete'].includes(op)){
   const kind=op.startsWith('patient')?'patient':op.startsWith('record')?'encounter':p.kind;
+  if(actor.role==='Administrador'&&kind!=='patient')fail('La atención clínica corresponde a Enfermería o Fisioterapia.');
   const old=p.id?await localDoc(tx,kind,p.id):undefined;
   if(p.id&&(!old||old.payload.deleted_at||old.payload.version!==p.version))fail('Registro modificado o inexistente. Recarga la ficha.');
   if(old&&!canArea(actor.role,old.area))fail('No tienes permiso para este registro.');

@@ -1,5 +1,5 @@
-import type{Patient,RecordEntry,User,UserInput,PatientInput}from'./core/model';
-export type{Patient,RecordEntry,User,Role}from'./core/model';
+import type{Patient,RecordEntry,User,UserInput,PatientInput,FinanceEntry,FinanceInput}from'./core/model';
+export type{Patient,RecordEntry,User,Role,FinanceEntry,FinanceInput,FinanceKind}from'./core/model';
 const native='__TAURI_INTERNALS__'in window;let token='';
 export const engine=native?'SQLite':'IndexedDB';
 const channel=typeof BroadcastChannel!=='undefined'&&typeof document!=='undefined'?new BroadcastChannel('clinova-shared-data'):null;
@@ -39,3 +39,6 @@ export const saveRecord=(data:Pick<RecordEntry,'patientId'|'kind'|'values'>&{id?
 export async function importDesktopLegacy(){if(native){const{legacySnapshot}=await import('./core/web');await request('legacy_import',await legacySnapshot());}}
 
 export const deleteRecord=(id:string,version:number)=>request('record_delete',{id,version});
+export const listFinance=()=>request<FinanceEntry[]>('finance_list');
+export const saveFinance=(data:FinanceInput)=>request<FinanceEntry>('finance_save',data);
+export const deleteFinance=(id:string,version:number)=>request('finance_delete',{id,version});

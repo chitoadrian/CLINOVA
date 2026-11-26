@@ -16,7 +16,7 @@ test('QA Semana 4: carga local, concurrencia y recuperación tras fallos',async 
  const a=(await q('login',{username:'qa.admin',password})).token;
  await q('user_save',{name:'QA Enfermero',username:'qa.nurse',password,role:'Enfermero',active:true},a);
  const n=(await q('login',{username:'qa.nurse',password})).token;
- const db=await openDB('clinova-v1',3);
+ const db=await openDB('clinova-v1',4);
  const input=(i:number)=>({name:'Paciente QA '+i,age:30,area:'Enfermería',reason:'Datos ficticios',status:'En espera'});
  let first:any;
  await t.test('500 altas con ráfagas de 20 escrituras; UUID únicos y cola completa',async()=>{
@@ -78,3 +78,4 @@ test('QA Semana 4: carga local, concurrencia y recuperación tras fallos',async 
  });
  db.close();
 });
+

@@ -32,7 +32,7 @@ test('migración v1, autenticación, permisos, CRUD y persistencia',async()=>{
  await q('record_save',{patientId:data.patients[0].id,kind:'Enfermería',values:{temperatura:'36.5',pulso:'72',sistolica:'120',diastolica:'80',saturacion:'98',triage:'Verde',observaciones:'Persistencia'}},nurse);
  await assert.rejects(q('record_save',{patientId:patient.id,kind:'Fisioterapia',values:{region:'Hombro',lado:'Derecha',movimiento:'Flexión',grados:'90',daniels:'4',dolor:'3',plan:'Plan de ejemplo'}},nurse));
  await q('record_save',{patientId:patient.id,kind:'Fisioterapia',values:{region:'Hombro',lado:'Derecha',movimiento:'Flexión',grados:'90',daniels:'4',dolor:'3',plan:'Plan de ejemplo'}},ptoken);
- const db=await openDB('clinova-v1',3);const credentials=await db.getAll('credentials');assert.equal(credentials.length,3);assert.ok(credentials.every(c=>c.iterations===600000&&c.password_hash.length===64&&c.salt.length===32&&!('password'in c)));assert.notEqual(credentials[1].salt,credentials[2].salt);assert.equal((await db.getAll('patients')).length,1);assert.equal((await db.getAll('encounters')).length,2);assert.equal((await db.getAll('vital_signs')).length,1);assert.equal((await db.getAll('evaluations')).length,1);db.close();
+ const db=await openDB('clinova-v1',4);const credentials=await db.getAll('credentials');assert.equal(credentials.length,3);assert.ok(credentials.every(c=>c.iterations===600000&&c.password_hash.length===64&&c.salt.length===32&&!('password'in c)));assert.notEqual(credentials[1].salt,credentials[2].salt);assert.equal((await db.getAll('patients')).length,1);assert.equal((await db.getAll('encounters')).length,2);assert.equal((await db.getAll('vital_signs')).length,1);assert.equal((await db.getAll('evaluations')).length,1);db.close();
  await q('logout',{},nurse);await assert.rejects(q('data',{},nurse));
  const nurse2=(await q('login',{username:'enfermero',password:'Otra frase segura de prueba'})).token;assert.equal((await q('data',{},nurse2)).records.length,2);
  await q('user_save',{...user,active:false},a);await assert.rejects(q('data',{},nurse2));await assert.rejects(q('login',{username:'enfermero',password:'Otra frase segura de prueba'}));
@@ -40,6 +40,7 @@ test('migración v1, autenticación, permisos, CRUD y persistencia',async()=>{
  await q('user_delete',{id:physio.id,version:physio.version},a);assert.equal((await q('users',{},a)).length,2);await assert.rejects(q('user_delete',{id:admin.user.id,version:admin.user.version},a));
  const lockuser=await q('user_save',{username:'bloqueo',name:'Cuenta bloqueo',role:'Enfermero',active:true,password:'Frase segura para bloqueo'},a);
  for(let i=0;i<5;i++)await assert.rejects(q('login',{username:'bloqueo',password:'fallo'}));await assert.rejects(q('login',{username:'bloqueo',password:'Frase segura para bloqueo'}));
- const inspect=await openDB('clinova-v1',3);assert.ok((await inspect.get('credentials',lockuser.id)).locked_until>Date.now());inspect.close();
+ const inspect=await openDB('clinova-v1',4);assert.ok((await inspect.get('credentials',lockuser.id)).locked_until>Date.now());inspect.close();
  const originalNow=Date.now;Date.now=()=>originalNow()+901000;await assert.rejects(q('data',{},a),/SESSION_EXPIRED/);Date.now=originalNow;
 });
+
