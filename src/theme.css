@@ -60,4 +60,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 [data-theme=dark] .sync-badge.completado{background:#173d34;color:#a4e8cb;border-color:#386e59}
 [data-theme=dark] .sync-badge.error{background:#40282d;color:#ffc4bb;border-color:#85565a}
 [data-theme=dark] .sync-badge.pendiente{background:#3b3020;color:#ffdc92;border-color:#7c653c}
+.data-card{background:#e9f3f7;border-color:#cce2eb;color:#205a72}
+.users-card{background:#e9f3ef;border-color:#cee4d8;color:#245f51}
+[data-theme=dark] .data-card{background:#183747;border-color:#3a6275;color:#d4edfa}
+[data-theme=dark] .users-card{background:#183d39;border-color:#3d6d61;color:#d7f3e6}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}

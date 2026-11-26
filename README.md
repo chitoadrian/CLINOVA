@@ -37,6 +37,8 @@ Sitio de presentación existente: https://orange-seal-508462.hostingersite.com/.
 
 jeshua y wilson son administradores; adrian, enfermero; matias, fisioterapeuta. Las contraseñas vigentes se entregan por un canal privado. El código contiene hashes PBKDF2 con sal individual, no contraseñas del grupo en texto plano. No ejecutar manualmente migraciones históricas sobre una base ya migrada.
 
+La navegación del equipo se personaliza: jeshua abre Coordinación, Enfermería, Fisioterapia, Pacientes y Sincronización; wilson abre Datos y acceso, Pacientes, Usuarios y Sincronización. Adrian y Matias conservan sus áreas clínicas. Jeshua y Wilson siguen teniendo el rol base Administrador en los servicios de datos; esta separación ordena sus pantallas de trabajo y no constituye una nueva frontera de autorización del backend.
+
 Enfermería: fichas, signos, triage manual, kardex, camas, ingreso y alta. Fisioterapia: evaluación, goniometría, Daniels, planes, rutinas y evolución. Los registros admiten edición y baja lógica, con validación de rangos y relaciones. El administrador gestiona cuentas locales.
 
 Web utiliza IndexedDB; las fuentes Tauri/Rust utilizan SQLite. El cambio y su pendiente se confirman en una transacción. Supabase Auth y la API verifican identidad y rol. UUID, op_id, revisiones y cursor gestionan intercambio y conflictos. Los datos se comparten según el área; los usuarios locales no se convierten automáticamente en cuentas cloud.

@@ -69,9 +69,15 @@ try{
  for(const [username,role] of [['jeshua','Administrador'],['wilson','Administrador'],['adrian','Enfermero'],['matias','Fisioterapeuta']]){
   await login(page,username);
   const buttons=await page.locator('aside button').allTextContents();
-  assert.equal(buttons.some(x=>x.trim()==='Usuarios'),role==='Administrador');
-  assert.equal(buttons.some(x=>x.trim()==='Enfermería'),role!=='Fisioterapeuta');
-  assert.equal(buttons.some(x=>x.trim()==='Fisioterapia'),role!=='Enfermero');
+  assert.equal(buttons.some(x=>x.trim()==='Usuarios'),username==='wilson');
+  assert.equal(buttons.some(x=>x.trim()==='Enfermería'),username==='jeshua'||role==='Enfermero');
+  assert.equal(buttons.some(x=>x.trim()==='Fisioterapia'),username==='jeshua'||role==='Fisioterapeuta');
+  assert.equal(buttons.some(x=>x.trim()==='Coordinación'),username==='jeshua');
+  assert.equal(buttons.some(x=>x.trim()==='Datos y acceso'),username==='wilson');
+  if(username==='wilson'){
+   await page.getByRole('button',{name:'Abrir usuarios'}).click();
+   await page.getByRole('heading',{name:'Usuarios',exact:true}).waitFor();
+  }
   results.push({case:'Acceso y navegación '+username,result:'correcto',role});
   await page.getByRole('button',{name:'Cerrar sesión'}).click();
  }
