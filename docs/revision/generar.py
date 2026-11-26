@@ -63,7 +63,7 @@ week1=[
  ('h','Qué se pidió y qué construimos'),('t','La guía exige un Gantt con responsables, casos de uso impresos, base Web/Windows/Linux y repositorio público. Nuestra solución se llama CLINOVA y separa Enfermería, Fisioterapia, Coordinación y, por decisión posterior del equipo, Contabilidad. La ampliación contable no formaba parte de la rúbrica inicial y se identifica como cambio posterior.'),
  ('table',(['Entregable','Ubicación y explicación'],[
   ['Gantt y roles','02_Gantt_y_Roles.pdf: 5 semanas, responsables y entregables. Las fechas de la guía se comparan con las fechas efectivas del equipo.'],
-  ['Casos de uso UML','03_Casos_de_Uso_UML.pdf: actores y operaciones de las dos áreas. El rol Contable se incorporó después y aparece en esta revisión.'],
+  ['Casos de uso UML','CASOS_DE_USO_ACTUALIZADOS.pdf: cuatro cuentas y sus permisos actuales. El rol Contable se incorporó después de la rúbrica inicial.'],
   ['Bocetos','04_Bocetos_Pantallas.pdf: inicio de sesión, vista general y dos áreas. La interfaz actual evolucionó desde esos bocetos.'],
   ['Código y GitHub','React + TypeScript, Tauri y repositorio público github.com/chitoadrian/CLINOVA.']], [130,381])),
  ('h','Arquitectura que sí usa el programa'),('t','El navegador ejecuta React y guarda sus datos en IndexedDB. El escritorio usa la misma interfaz en Tauri con SQLite. El servidor no sustituye el almacenamiento local: Supabase Auth identifica usuarios de sincronización; una Edge Function recibe los cambios clínicos; PostgreSQL guarda documentos, revisiones y confirmaciones. Las cuentas locales y las cuentas cloud son capas separadas.'),
